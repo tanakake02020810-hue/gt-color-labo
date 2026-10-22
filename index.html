@@ -13,9 +13,47 @@
 #designSection .design-result pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit;font-size:13px;color:#e2e7ed}
 #designSection .design-result button{margin-top:9px}
 @media(max-width:500px){#designSection .design-grid{grid-template-columns:1fr}}
-</style></head><body><main><header class="top"><div><div class="eyebrow">HAIRHOUSE GT · PROFESSIONAL TOOL</div><h1>COLOR LAB <span>PRO</span></h1><div class="sub">カラー剤の配合を、すばやく正確に。</div></div><button id="reset" title="初期状態に戻す">初期化</button></header><div class="gt-mode-switch" role="tablist" aria-label="モード切替"><button type="button" id="gtModeCalc" class="active" aria-selected="true">COLOR LAB｜配合計算</button><button type="button" id="gtModeRecipe" aria-selected="false">PHOTO RECIPE｜写真付きレシピ</button><button type="button" id="gtModeDesign" aria-selected="false">COLOR DESIGN｜補色・ブリーチ・実例配合</button></div>
+</style><style>
+/* COLOR DESIGN: tap-first visual selector */
+#designSection>.design-grid:first-of-type,#designSection>div:has(> #designFinish),#designSection>.design-grid:has(#designGrams){display:none!important}
+.gt-visual-step{margin:16px 0;padding:16px;border:1px solid #384d65;border-radius:17px;background:#101d2e}
+.gt-visual-step h3{font-size:16px;margin:0 0 12px;color:#e9c48a}
+.gt-choice-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.gt-choice-grid.five{grid-template-columns:repeat(2,minmax(0,1fr))}
+.gt-choice{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;background:#1b2b40;border:2px solid #35465b;border-radius:12px;min-height:70px;padding:9px 5px;text-align:center;font-size:13px;line-height:1.3}
+.gt-choice.selected{border-color:#f1c77d;background:#433a2d;color:#ffe5ad;box-shadow:0 0 0 1px #f1c77d44}
+.gt-swatch{width:100%;height:36px;border-radius:7px;border:1px solid #ffffff26}
+.gt-visual-result{padding:15px;border-radius:14px;background:#26364a;border:1px solid #b79560;line-height:1.7}
+.gt-slider{width:100%;accent-color:#e6bd77;padding:0;background:transparent;border:0;height:32px}
+.gt-slider-line{display:flex;justify-content:space-between;align-items:center;gap:12px}.gt-slider-line strong{font-size:24px;color:#f3cc8b}
+.gt-visual-group-label{font-size:13px;color:#b7c4d4;margin:13px 0 8px}
+@media(min-width:650px){.gt-choice-grid.five{grid-template-columns:repeat(5,minmax(0,1fr))}}
+</style>
+<style>
+/* Direct formula edition: keep previous elements for compatibility but remove their UI */
+#designSection>.design-grid,#designSection>.design-note,#designSection>#designProposal,#designSection>#designMatches,#designSection>#designStatus,#designSection>#gtVisualSelector~p.hint{display:none!important}
+#designSection>.design-note{display:none!important}
+#designSection>h2[style]{display:none!important}
+#designSection>#gtVisualSelector~div.design-result{display:none!important}
+#gtDirectRecipe{margin-top:18px;border:1px solid #c6a568;background:linear-gradient(155deg,#152237,#0d1725);border-radius:16px;padding:16px}
+#gtDirectRecipe h3{color:#f0cf94;margin:0 0 12px;font-size:19px}
+#gtDirectRecipe .dr-note{font-size:12px;color:#b7c5d6;line-height:1.7}
+#gtDirectRecipe .dr-row{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid #39465a;align-items:center}
+#gtDirectRecipe .dr-row strong{color:#f4d49b;font-size:17px}
+#gtDirectRecipe .dr-total{background:#202e43;border-radius:10px;padding:12px;margin:12px 0}
+#gtDirectRecipe button{width:100%;margin-top:12px}
+</style>
+</head><body><main><header class="top"><div><div class="eyebrow">HAIRHOUSE GT · PROFESSIONAL TOOL</div><h1>COLOR LAB <span>PRO</span></h1><div class="sub">カラー剤の配合を、すばやく正確に。</div></div><button id="reset" title="初期状態に戻す">初期化</button></header><div class="gt-mode-switch" role="tablist" aria-label="モード切替"><button type="button" id="gtModeCalc" class="active" aria-selected="true">COLOR LAB｜配合計算</button><button type="button" id="gtModeRecipe" aria-selected="false">PHOTO RECIPE｜写真付きレシピ</button><button type="button" id="gtModeDesign" aria-selected="false">COLOR DESIGN｜N.ルフレ配合提案</button></div>
 <section class="panel gt-hidden-mode" id="designSection" hidden>
-<h2>COLOR DESIGN · N.ルフレ専用</h2><p class="hint">更新版：2026-10-23｜実例配合連携</p><p class="hint">ブリーチベースと残留色素から補色の方向性を確認し、登録済みのPHOTO RECIPE 21件から参考レシピを探し、実在レシピに登場する薬剤で配合量を試算できます。</p>
+<h2>COLOR DESIGN · N.ルフレ専用</h2><p class="hint">更新版：2026-10-23｜20色対応・概算配合を自動提案</p><p class="hint">ブリーチベース・残留色素・希望色をタップすると、N.ルフレの概算配合案を直接表示します。PHOTO RECIPEの参照は不要です。</p>
+<div id="gtVisualSelector">
+<div class="gt-visual-step"><h3>STEP 1｜ブリーチベースを選ぶ</h3><div id="gtVisualBase" class="gt-choice-grid"></div></div>
+<div class="gt-visual-step"><h3>STEP 2｜残留している色を選ぶ</h3><div id="gtVisualResidue" class="gt-choice-grid"></div></div>
+<div class="gt-visual-step"><h3>STEP 3｜希望する色味を選ぶ</h3><div id="gtVisualGoal"></div></div>
+<div class="gt-visual-step"><h3>STEP 4｜仕上がりの方向性</h3><div id="gtVisualFinish" class="gt-choice-grid"></div></div>
+<div class="gt-visual-step"><h3>STEP 5｜明るさと使用量</h3><div class="gt-slider-line"><span>希望明度</span><strong id="gtVisualTargetValue">10 Lv</strong></div><input class="gt-slider" id="gtVisualTargetSlider" type="range" min="6" max="14" value="10"><div class="gt-slider-line"><span>1剤の合計量</span><strong id="gtVisualGramsValue">80 g</strong></div><input class="gt-slider" id="gtVisualGramsSlider" type="range" min="20" max="200" step="5" value="80"><div class="gt-visual-group-label">レシピの部位</div><div id="gtVisualZone" class="gt-choice-grid"></div></div>
+<div id="gtDirectRecipe" aria-live="polite"></div><div class="gt-visual-result" id="gtVisualSummary" aria-live="polite"></div>
+</div>
 <div class="design-grid"><div><label for="designBase">現在のブリーチベース</label><select id="designBase"><option>14</option><option>15</option><option selected>16</option><option>17</option><option>18</option><option>19</option></select></div>
 <div><label for="designResidue">残留色素</label><select id="designResidue"><option value="orange">オレンジ</option><option value="yelloworange" selected>黄オレンジ</option><option value="yellow">黄色</option><option value="paleyellow">薄い黄色</option><option value="redorange">赤オレンジ</option></select></div>
 <div><label for="designGoal">希望する色味</label><select id="designGoal"><optgroup label="寒色・アッシュ系"><option value="ash">アッシュ</option><option value="greige">グレージュ</option><option value="silver">シルバー</option><option value="blue">ブルーアッシュ</option><option value="lavenderash">ラベンダーアッシュ</option></optgroup><optgroup label="ベージュ・ナチュラル系"><option value="milk" selected>ミルクティーベージュ</option><option value="sand">サンドベージュ</option><option value="greigebeige">グレージュベージュ</option><option value="brown">ナチュラルブラウン</option><option value="chocolate">ショコラブラウン</option></optgroup><optgroup label="ピンク・暖色系"><option value="pink">ピンクベージュ</option><option value="pinkbrown">ピンクブラウン</option><option value="lavender">ラベンダー</option><option value="rose">ローズピンク</option><option value="red">レッドブラウン</option></optgroup><optgroup label="オリーブ・その他"><option value="olive">オリーブグレージュ</option><option value="matte">マットアッシュ</option><option value="khaki">カーキベージュ</option><option value="copper">カッパー</option><option value="orange">オレンジベージュ</option></optgroup></select></div>
@@ -371,6 +409,92 @@ function render(){
 pick.addEventListener('change',render);grams.addEventListener('input',render);
 copy.addEventListener('click',()=>{if(!memo)return;if(navigator.clipboard?.writeText)navigator.clipboard.writeText(memo).catch(()=>window.prompt('コピー用メモ',memo));else window.prompt('コピー用メモ',memo)});
 render();
+})();
+</script>
+<script>
+(function(){
+const defs={
+ designBase:{el:'gtVisualBase',items:[['14','14 Lv','#b9893b'],['15','15 Lv','#cfa24d'],['16','16 Lv','#dfb867'],['17','17 Lv','#e9cd8a'],['18','18 Lv','#f2dfa8'],['19','19 Lv','#f7ebcc']]},
+ designResidue:{el:'gtVisualResidue',items:[['orange','オレンジ','#dc8641'],['yelloworange','黄オレンジ','#e3aa47'],['yellow','黄色','#f2d666'],['paleyellow','薄い黄色','#f5e9b5'],['redorange','赤オレンジ','#bd6644']]},
+ designFinish:{el:'gtVisualFinish',items:[['clear','透明感重視'],['vivid','色味重視'],['natural','ナチュラル']]},
+ designZone:{el:'gtVisualZone',items:[['middle','中間・毛先'],['root','根元'],['all','全体']]}
+};
+const swatches=['#9ca5ac','#a9a399','#c4c7cc','#73879c','#a79eb9','#d9bd91','#cbb08a','#b5aa99','#80634c','#664839','#d6a2a8','#a66e78','#ae94bd','#bd738e','#9f514e','#8b9175','#84927b','#a5a07a','#c07b51','#da9d63'];
+const goalSelect=document.getElementById('designGoal');
+const goalBox=document.getElementById('gtVisualGoal');
+let index=0;
+Array.from(goalSelect.querySelectorAll('optgroup')).forEach(group=>{
+const label=document.createElement('div');label.className='gt-visual-group-label';label.textContent=group.label;goalBox.append(label);
+const grid=document.createElement('div');grid.className='gt-choice-grid five';
+Array.from(group.querySelectorAll('option')).forEach(opt=>{
+const b=document.createElement('button');b.type='button';b.className='gt-choice';b.dataset.value=opt.value;
+const sw=document.createElement('span');sw.className='gt-swatch';sw.style.background=swatches[index++]||'#888';
+const txt=document.createElement('span');txt.textContent=opt.textContent;b.append(sw,txt);
+b.addEventListener('click',()=>{goalSelect.value=opt.value;goalSelect.dispatchEvent(new Event('change',{bubbles:true}));sync()});grid.append(b)
+});goalBox.append(grid)
+});
+Object.entries(defs).forEach(([id,def])=>{
+const select=document.getElementById(id),host=document.getElementById(def.el);
+def.items.forEach(([value,label,color])=>{const b=document.createElement('button');b.type='button';b.className='gt-choice';b.dataset.value=value;
+if(color){const sw=document.createElement('span');sw.className='gt-swatch';sw.style.background=color;b.append(sw)}
+const t=document.createElement('span');t.textContent=label;b.append(t);b.addEventListener('click',()=>{select.value=value;select.dispatchEvent(new Event('change',{bubbles:true}));sync()});host.append(b)})
+});
+const pairs=[['designTarget','gtVisualTargetSlider','gtVisualTargetValue',' Lv'],['designGrams','gtVisualGramsSlider','gtVisualGramsValue',' g']];
+pairs.forEach(([id,sliderId])=>{const input=document.getElementById(id),slider=document.getElementById(sliderId);slider.addEventListener('input',()=>{input.value=slider.value;input.dispatchEvent(new Event('input',{bubbles:true}));input.dispatchEvent(new Event('change',{bubbles:true}));sync()})});
+function sync(){
+[...Object.entries(defs),['designGoal',{el:'gtVisualGoal'}]].forEach(([id,def])=>{const val=document.getElementById(id).value;document.querySelectorAll('#'+def.el+' .gt-choice').forEach(b=>{const active=b.dataset.value===val;b.classList.toggle('selected',active);b.setAttribute('aria-pressed',String(active))})});
+pairs.forEach(([id,sliderId,labelId,unit])=>{const val=document.getElementById(id).value;document.getElementById(sliderId).value=val;document.getElementById(labelId).textContent=val+unit});
+const label=goalSelect.options[goalSelect.selectedIndex]?.textContent||'';
+const residue=document.getElementById('designResidue');const r=residue.options[residue.selectedIndex]?.textContent||'';
+const f=document.getElementById('designFinish');const ft=f.options[f.selectedIndex]?.textContent||'';
+document.getElementById('gtVisualSummary').textContent=`選択中：${document.getElementById('designBase').value}Lv ／ ${r} ／ ${label} ／ ${document.getElementById('designTarget').value}Lv ／ ${ft} ／ 1剤${document.getElementById('designGrams').value}g`;
+}
+['designBase','designResidue','designGoal','designFinish','designTarget','designGrams','designZone'].forEach(id=>document.getElementById(id).addEventListener('change',sync));
+sync();
+})();
+</script>
+<script>
+(()=>{'use strict';
+const $=id=>document.getElementById(id);
+const host=$('gtDirectRecipe');if(!host)return;
+// Preliminary recipe design: codes present in bundled N. Reflet shade data; color behavior not independently validated.
+const designs={
+ash:['9-AT','9-CN'],greige:['9-AT','9-BR'],silver:['9-AT','9-IR'],blue:['9-AT','7-CT'],lavenderash:['9-AT','9-IR'],
+milk:['9-CN','9-FO'],sand:['9-SA','9-CN'],greigebeige:['9-CN','9-AT'],brown:['9-BR','9-CN'],chocolate:['7-BR','9-BR'],
+pink:['9-PE','9-CN'],pinkbrown:['9-PE','9-BR'],lavender:['9-IR','9-PE'],rose:['9-PE','9-GA'],red:['9-GA','9-PE'],
+olive:['9-ME','9-CN'],matte:['9-ME','9-AT'],khaki:['9-ME','9-SA'],copper:['9-SC','9-CN'],orange:['9-SC','9-FO']};
+const names={ash:'アッシュ',greige:'グレージュ',silver:'シルバー',blue:'ブルーアッシュ',lavenderash:'ラベンダーアッシュ',milk:'ミルクティーベージュ',sand:'サンドベージュ',greigebeige:'グレージュベージュ',brown:'ナチュラルブラウン',chocolate:'ショコラブラウン',pink:'ピンクベージュ',pinkbrown:'ピンクブラウン',lavender:'ラベンダー',rose:'ローズピンク',red:'レッドブラウン',olive:'オリーブグレージュ',matte:'マットアッシュ',khaki:'カーキベージュ',copper:'カッパー',orange:'オレンジベージュ'};
+const residue={orange:['7-CT','オレンジ残留：青方向の補正を検討'],yelloworange:['9-IR','黄オレンジ残留：青紫方向の補正を検討'],yellow:['9-IR','黄色残留：紫方向の補正を検討'],paleyellow:['9-IR','薄黄色残留：淡い紫方向の補正を検討']};
+const esc=t=>String(t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function calculate(){
+ const goal=$('designGoal')?.value||'milk',base=Number($('designBase')?.value||16),res=$('designResidue')?.value||'yelloworange';
+ const target=Number($('designTarget')?.value||10),finish=$('designFinish')?.value||'clear',grams=Number($('designGrams')?.value||80);
+ if(!designs[goal]||!Number.isFinite(grams)||grams<10||grams>500)return;
+ const [main,accent]=designs[goal],adj=residue[res]||residue.yelloworange;
+ let correction=(finish==='natural'?4:finish==='vivid'?6:8);
+ if(['pink','pinkbrown','rose','red','copper','orange'].includes(goal))correction=finish==='vivid'?0:3;
+ if(base>=18)correction=Math.min(correction,4);
+ let clear=base>=18&&target>=11? (finish==='clear'?22:10):base>=17&&target>=12?10:0;
+ if(target<=8)clear=0;
+ const accentPct=finish==='vivid'?38:finish==='natural'?25:30;
+ const parts=[[main,100-accentPct-correction-clear],[accent,accentPct]];
+ if(correction>0){const ix=parts.findIndex(p=>p[0]===adj[0]);if(ix>=0)parts[ix][1]+=correction;else parts.push([adj[0],correction]);}
+ if(clear>0)parts.push(['クリア',clear]);
+ const mix=new Map();for(const [name,pct] of parts)mix.set(name,(mix.get(name)||0)+pct);
+ const rows=[...mix].filter(x=>x[1]>0);
+ const tone=finish==='clear'?'透明感重視':finish==='vivid'?'色味重視':'ナチュラル仕上げ';
+ const ox=target<=9?'3%':'3%（要調整）';
+ const formula=rows.map(([name,pct])=>`${name} ${pct}%（${(grams*pct/100).toFixed(1)}g）`).join('\n');
+ const memo=`GT COLOR DESIGN｜概算配合案\nベース${base}Lv / ${names[goal]} ${target}Lv / ${tone}\n${formula}\n1剤合計 ${grams}g\nOX濃度候補 ${ox}（混合倍率は製品指示で確認）\n※毛束テスト前提の未検証案`;
+ host.innerHTML=`<h3>✦ N.ルフレ 概算配合レシピ</h3><div class="dr-note">${esc(names[goal])} ${target}Lv · ${esc(tone)} · ブリーチ${base}Lv</div><div class="dr-total"><strong>1剤合計 ${grams}g</strong><div class="dr-note">配合比率を100%として計算</div></div>${rows.map(([name,pct])=>`<div class="dr-row"><span>${esc(name)} <small>(${pct}%)</small></span><strong>${(grams*pct/100).toFixed(1)} g</strong></div>`).join('')}<div class="dr-row"><span>OX濃度候補</span><strong>${ox}</strong></div><p class="dr-note">${esc(adj[1])}。補色量・クリア量は仮の初期値です。ベースの実際の色素量、履歴、毛髪状態によって変更してください。</p><p class="dr-note">⚠️ この配合は自動生成した未検証の概算案で、メーカー公式レシピや発色保証ではありません。薬剤の使用可否、OX濃度・混合比・放置時間はメーカー指示に従い、必ず毛束テストで確認してください。</p><button type="button" id="gtDirectCopy">配合メモをコピー</button>`;
+ $('gtDirectCopy').onclick=()=>{if(navigator.clipboard?.writeText)navigator.clipboard.writeText(memo).catch(()=>fallback(memo));else fallback(memo)};
+ function fallback(t){const x=document.createElement('textarea');x.value=t;document.body.append(x);x.select();document.execCommand('copy');x.remove()}
+}
+for(const id of ['designBase','designResidue','designGoal','designTarget','designFinish','designGrams'])$(id)?.addEventListener('change',calculate);
+// Visual selectors set native select values; observe direct taps as well.
+$('gtVisualSelector')?.addEventListener('click',()=>setTimeout(calculate,0));
+for(const id of ['gtVisualTargetSlider','gtVisualGramsSlider'])$(id)?.addEventListener('input',()=>setTimeout(calculate,0));
+calculate();
 })();
 </script>
 </body></html>

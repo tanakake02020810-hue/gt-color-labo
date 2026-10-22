@@ -1,4 +1,4 @@
-const CACHE_NAME = 'gt-color-lab-pro-pwa-v9-example-recipe-20261023';
+const CACHE_NAME = 'gt-color-lab-pro-pwa-v9-example-recipe-20261023visual2';
 const FILES = ['./index.html', './manifest.webmanifest', './recipes.json'];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(FILES)).then(() => self.skipWaiting()));
