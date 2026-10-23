@@ -68,7 +68,46 @@ footer{color:#888fa6}
 @media(max-width:370px){.gt-mode-switch button{font-size:11px}.gt-choice-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media print{body{background:#fff}.panel{box-shadow:none}}
 
-</style></head><body><main><header class="top"><div><div class="eyebrow">HAIRHOUSE GT · PROFESSIONAL TOOL</div><h1>COLOR LAB <span>PRO</span></h1><div class="sub">カラー剤の配合を、すばやく正確に。</div></div><button id="reset" title="初期状態に戻す">初期化</button></header><div class="gt-mode-switch" role="tablist" aria-label="モード切替"><button type="button" id="gtModeCalc" class="active" aria-selected="true">COLOR LAB｜配合計算</button><button type="button" id="gtModeRecipe" aria-selected="false">PHOTO RECIPE｜写真付きレシピ</button><button type="button" id="gtModeDesign" aria-selected="false">COLOR DESIGN｜N.ルフレ配合提案</button></div>
+</style><style>
+.gt-mode-switch{flex-wrap:wrap}.gt-mode-switch button{flex:1 1 42%;min-width:130px}
+#gtEasySection{background:linear-gradient(160deg,#fff9fc,#f4f9ff);color:#2c3045}
+#gtEasySection h2{color:#27364e}#gtEasySection .hint{color:#626b7b}
+#gtEasySection label{color:#526077}#gtEasySection input,#gtEasySection select{background:white;color:#263147;border:1px solid #d9ddea}
+.gt-easy-target{background:#fff;border-radius:20px;padding:18px;border:1px solid #f2e3ee}
+.gt-easy-line{display:flex;align-items:center;gap:12px}.gt-easy-line input{font-size:30px;font-weight:800;max-width:220px}
+.gt-easy-header{display:flex;justify-content:space-between;align-items:center;margin:22px 0 12px}.gt-easy-header h3{margin:0}.gt-easy-header button{background:#e6edff;color:#283650;border:0;margin-left:6px}
+.gt-easy-row{display:grid;grid-template-columns:1fr 90px 1fr;gap:10px;align-items:center;background:white;padding:12px;border-radius:17px;margin:9px 0;border:1px solid #ebebf5}
+.gt-easy-tag{font-weight:700}.gt-easy-row input{text-align:center;font-size:22px;font-weight:800}.gt-easy-grams{text-align:right;color:#db5493;font-size:23px;font-weight:900}
+.gt-easy-result{margin:18px 0;padding:20px;border-radius:22px;background:linear-gradient(120deg,#ffe5f0,#e0f5ff);color:#283147}
+.gt-easy-kicker{font-size:13px;font-weight:700;color:#8b5472}.gt-easy-big{font-size:20px;margin:10px 0}.gt-easy-big strong{font-size:34px;color:#cf4d8e}
+.gt-easy-line-result{display:flex;justify-content:space-between;padding:10px 0;border-top:1px solid #ffffffbb}
+.gt-easy-oxy{padding:14px 0}#gtEasyCopy{background:linear-gradient(100deg,#fa72ad,#ffb36b);color:white;border:0;width:100%;border-radius:18px}
+@media(max-width:480px){.gt-easy-row{grid-template-columns:1fr 75px 90px}.gt-easy-grams{font-size:20px}.gt-mode-switch button{font-size:12px;min-height:65px}}
+</style><script>
+window.gtRoundFormula=function(pcts,target){
+ const req=Math.max(1,Math.ceil(Number(target)||1));const weights=pcts.map(x=>Number(x)/pcts.reduce((a,b)=>a+Number(b),0));
+ for(let total=req;total<=Math.max(req+250,req*2);total++){
+  const raw=weights.map(x=>x*total);
+  if(raw.every(x=>Math.abs(x-Math.round(x))<1e-7))return {values:raw.map(Math.round),total,exact:true};
+ }
+ let best=null;for(let total=req;total<=req+Math.max(2,Math.min(10,Math.ceil(req*.05)));total++){
+  const raw=weights.map(w=>w*total),values=raw.map(Math.floor);let left=total-values.reduce((a,b)=>a+b,0);
+  const order=raw.map((v,i)=>({i,f:v-values[i]})).sort((a,b)=>b.f-a.f||a.i-b.i);
+  for(let j=0;j<left;j++)values[order[j%order.length].i]++;
+  const score=values.reduce((s,v,i)=>s+Math.abs(v-raw[i]),0)+(total-req)*.035;
+  if(!best||score<best.score)best={values,total,exact:false,score};
+ }return best;
+};
+</script></head><body><main><header class="top"><div><div class="eyebrow">HAIRHOUSE GT · PROFESSIONAL TOOL</div><h1>COLOR LAB <span>PRO</span></h1><div class="sub">カラー剤の配合を、すばやく正確に。</div></div><button id="reset" title="初期状態に戻す">初期化</button></header><div class="gt-mode-switch" role="tablist" aria-label="モード切替"><button type="button" id="gtModeCalc" class="active" aria-selected="true">COLOR LAB｜配合計算</button><button type="button" id="gtModeRecipe" aria-selected="false">PHOTO RECIPE｜写真付きレシピ</button><button type="button" id="gtModeDesign" aria-selected="false">COLOR DESIGN｜N.ルフレ配合提案</button><button type="button" id="gtModeEasy" aria-selected="false">かんたん計算｜薬剤選定なし</button></div>
+<section class="panel gt-hidden-mode" id="gtEasySection" hidden>
+<h2>🧮 かんたん配合計算</h2><p class="hint">薬剤選定なし。比率と必要量を入れるだけ。1g単位で量れるよう、合計量を自動調整します。</p>
+<div class="gt-easy-target"><label for="gtEasyTotal">必要な1剤の量（これ以上作る）</label><div class="gt-easy-line"><input id="gtEasyTotal" type="number" min="1" max="10000" step="1" value="100" inputmode="numeric"><strong>g</strong></div><div class="pills" id="gtEasyPresets"></div></div>
+<div class="gt-easy-header"><h3>配合比率</h3><div><button type="button" id="gtEasyMinus">−</button><button type="button" id="gtEasyPlus">＋ 薬剤</button></div></div>
+<div id="gtEasyRows"></div>
+<div class="gt-easy-result" aria-live="polite" id="gtEasyResult"></div>
+<div class="gt-easy-oxy"><label for="gtEasyOxy">2剤の倍率（1剤に対して）</label><select id="gtEasyOxy"><option value="0">計算しない</option><option value="1" selected>1：1</option><option value="1.5">1：1.5</option><option value="2">1：2</option></select><p class="hint">2剤は計算上の参考量です。製品指定の倍率を確認してください。</p></div>
+<button class="primary" type="button" id="gtEasyCopy">配合結果をコピー</button>
+</section>
 <section class="panel gt-hidden-mode" id="designSection" hidden>
 <h2>COLOR DESIGN · N.ルフレ専用</h2><p class="hint">更新版：2026-10-23｜20色対応・概算配合を自動提案</p><p class="hint">ブリーチベース・残留色素・希望色をタップすると、N.ルフレの概算配合案を直接表示します。PHOTO RECIPEの参照は不要です。</p>
 <div id="gtVisualSelector">
@@ -114,7 +153,7 @@ footer{color:#888fa6}
 <section class="panel"><h2>04 · 追加で同じ配合を作る</h2><label for="extra">追加するカラー剤の量（g）※オキシ別</label><div class="flex"><div class="grow"><input id="extra" type="number" inputmode="decimal" min="0" step="0.1" value="30"></div><button id="extra30">30g</button><button id="extra50">50g</button></div><div id="extraResults" style="margin-top:12px"></div><div class="metric" style="margin-top:12px"><span class="muted">追加分のオキシ</span><strong id="extraOxy">30.0g</strong></div></section>
 <section class="panel"><h2>05 · レシピ保存</h2><div class="flex"><div class="grow"><label for="recipeName">レシピ名</label><input id="recipeName" placeholder="例：グレージュ 8Lv"></div><button class="primary" id="saveRecipe">レシピ保存</button></div><div id="recipes" style="margin-top:12px"></div><p class="hint">保存先はこの端末のブラウザ内です。別端末との自動同期はありません。ブラウザデータを消すと履歴も消えます。</p></section>
 <section class="panel"><h2>06 · 配合履歴</h2><div class="actions"><button class="primary" id="record">現在の配合を履歴に記録</button><button id="export">データを書き出す</button><button id="importBtn">データを読み込む</button><input id="importFile" type="file" accept="application/json,.json" hidden></div><div id="history" style="margin-top:12px"></div></section>
-<section class="panel"><div class="actions"><button class="primary" id="copy">配合結果をコピー</button><button id="print">印刷</button></div><p class="hint">0.1g単位で計算。最後の薬剤に丸め差を調整し、表示上の合計が総量と一致するようにしています。メーカー指定の混合比・使用条件は別途確認してください。</p></section><section class="panel"><h2>07 · 部位別配合</h2><div class="pills" id="zoneTabs"></div><p class="hint">根元・中間・毛先はそれぞれ独立した配合です。現在の部位の内容を変更してから切り替えできます。</p><div class="actions"><button id="copyZone">現在の配合を別部位へコピー</button><button id="weigh">大きな計量モード</button></div></section>
+<section class="panel"><div class="actions"><button class="primary" id="copy">配合結果をコピー</button><button id="print">印刷</button></div><p class="hint">1g単位で計算。指定量以上で比率を保てる最小量を優先し、必要に応じて近似調整。表示上の合計が総量と一致するようにしています。メーカー指定の混合比・使用条件は別途確認してください。</p></section><section class="panel"><h2>07 · 部位別配合</h2><div class="pills" id="zoneTabs"></div><p class="hint">根元・中間・毛先はそれぞれ独立した配合です。現在の部位の内容を変更してから切り替えできます。</p><div class="actions"><button id="copyZone">現在の配合を別部位へコピー</button><button id="weigh">大きな計量モード</button></div></section>
 <section class="panel"><h2>08 · カラー選択サポート</h2><div class="flex"><div class="grow"><label>お気に入り・最近使った色番</label><select id="quickColor"><option value="">色番を選択</option></select></div><button id="favorite">★ 現在の薬剤をお気に入り</button></div><div id="favList"></div><p class="hint">お気に入りの色番をタップすると、選択中の薬剤欄に反映します。薬剤欄をタップすると選択対象になります。</p></section>
 <section class="panel"><h2>09 · オキシ濃度の調整</h2><div class="grid"><div><label>高濃度 (%)</label><input id="oxyHigh" type="number" value="6" min="0" step="0.1"></div><div><label>低濃度 (%)</label><input id="oxyLow" type="number" value="3" min="0" step="0.1"></div><div><label>目標濃度 (%)</label><input id="oxyTarget" type="number" value="4.5" min="0" step="0.1"></div></div><div class="totalbox"><div class="metric"><span class="muted">高濃度オキシ</span><strong id="oxyHighG">—</strong></div><div class="metric"><span class="muted">低濃度オキシ</span><strong id="oxyLowG">—</strong></div><div class="metric"><span class="muted">目標濃度</span><strong id="oxyActual">—</strong></div></div><p class="warn" id="oxyWarn"></p><p class="hint">オキシ総量を高濃度と低濃度に分ける重量計算です。製品の混合可否やメーカーの使用条件を確認してください。</p></section>
 <section class="panel"><h2>10 · レシピ検索・共有</h2><label>保存レシピを検索</label><input id="recipeSearch" placeholder="名前・色番で検索"><div class="actions"><button class="primary" id="share">現在の配合を共有</button><button id="backupAll">部位別データを含むバックアップ</button></div><p class="hint">共有は端末の共有メニュー、非対応の場合はコピーで対応します。バックアップは別端末への移行にも使えます。</p></section>
@@ -159,12 +198,41 @@ function persist(){state.customHues=customHues;try{localStorage.setItem(key,JSON
 function safe(n){return Number.isFinite(Number(n))?Math.max(0,Number(n)):0}
 function fmt(n){return (Math.round(n*10)/10).toFixed(1)+'g'}
 function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function calc(total=state.total){const ds=state.drugs;const ps=ds.reduce((s,d)=>s+(d.mode==='percent'?safe(d.value):0),0);const ratios=ds.reduce((s,d)=>s+(d.mode==='ratio'?safe(d.value):0),0);let error='';if(ps>100+1e-8)error='%の合計が100%を超えています。';else if(ps<100-1e-8&&ratios<=0)error='残りを配分するため、対比の薬剤を1つ以上設定してください。';else if(ds.length===0)error='薬剤を追加してください。';if(error)return {error,values:ds.map(()=>0)};const units=Math.round(safe(total)*10);const raw=ds.map(d=>d.mode==='percent'?safe(total)*safe(d.value)/100:(safe(total)*(1-ps/100))*safe(d.value)/ratios);let base=raw.map(v=>Math.floor(v*10+1e-9));let remain=units-base.reduce((s,v)=>s+v,0);const order=raw.map((v,i)=>({i,frac:v*10-base[i]})).sort((a,b)=>b.frac-a.frac||a.i-b.i);for(let i=0;i<remain;i++)base[order[i%order.length].i]++;return {values:base.map(n=>n/10),error:''};}
-function calcFor(s){const ds=s.drugs,total=s.total;const ps=ds.reduce((n,d)=>n+(d.mode==='percent'?safe(d.value):0),0),ratios=ds.reduce((n,d)=>n+(d.mode==='ratio'?safe(d.value):0),0);if(ps>100+1e-8)return {error:'%の合計が100%を超えています'};if(ps<100-1e-8&&ratios<=0)return {error:'対比の薬剤が必要です'};const units=Math.round(safe(total)*10);const raw=ds.map(d=>d.mode==='percent'?safe(total)*safe(d.value)/100:safe(total)*(1-ps/100)*safe(d.value)/ratios);const base=raw.map(v=>Math.floor(v*10+1e-9));let remain=units-base.reduce((n,v)=>n+v,0);const order=raw.map((v,i)=>({i,f:v*10-base[i]})).sort((a,b)=>b.f-a.f||a.i-b.i);for(let i=0;i<remain;i++)base[order[i%order.length].i]++;return {values:base.map(n=>n/10),error:''}}
+
+function gtIntegerMix(ds,requested){
+ const target=Math.max(0,Math.ceil(Number(requested)||0));
+ const ps=ds.reduce((s,d)=>s+(d.mode==='percent'?safe(d.value):0),0);
+ const ratios=ds.reduce((s,d)=>s+(d.mode==='ratio'?safe(d.value):0),0);
+ if(!ds.length)return {error:'薬剤を追加してください。',values:[]};
+ if(ps>100+1e-8)return {error:'%の合計が100%を超えています。',values:[]};
+ if(ps<100-1e-8&&ratios<=0)return {error:'対比の薬剤が必要です。',values:[]};
+ const weights=ds.map(d=>d.mode==='percent'?safe(d.value)/100:(1-ps/100)*safe(d.value)/(ratios||1));
+ // First look for an exact whole-gram solution within a practical range.
+ const cap=Math.max(target+250,Math.ceil(target*2));
+ for(let total=target;total<=cap;total++){
+  const vals=weights.map(w=>total*w);
+  if(vals.every(v=>Math.abs(v-Math.round(v))<1e-7))return {values:vals.map(Math.round),total,exact:true,error:''};
+ }
+ // Otherwise find a near-target integer approximation; never exceed 5% or 10g extra.
+ const limit=target+Math.max(2,Math.min(10,Math.ceil(target*.05)));
+ let best=null;
+ for(let total=target;total<=limit;total++){
+  const raw=weights.map(w=>w*total),vals=raw.map(Math.floor);
+  let remain=total-vals.reduce((a,b)=>a+b,0);
+  const order=raw.map((v,i)=>({i,f:v-vals[i]})).sort((a,b)=>b.f-a.f||a.i-b.i);
+  for(let j=0;j<remain;j++)vals[order[j%order.length].i]++;
+  const err=vals.reduce((s,v,i)=>s+Math.abs(v-raw[i]),0);
+  const score=err+(total-target)*.035;
+  if(!best||score<best.score)best={values:vals,total,exact:false,error:'',score};
+ }
+ return best||{values:weights.map(()=>0),total:0,exact:false,error:''};
+}
+function calc(total=state.total){return gtIntegerMix(state.drugs,total)}
+function calcFor(s){return gtIntegerMix(s.drugs,s.total)}
 function oxyFactor(){return state.oxyEnabled?(state.oxyRatio==='custom'?safe(state.oxyCustom):safe(state.oxyRatio)):0}
 function inputState(){state.total=safe($('total').value);state.extra=safe($('extra').value);state.oxyEnabled=$('oxyEnabled').checked;state.oxyRatio=$('oxyRatio').value;state.oxyCustom=safe($('oxyCustom').value)}
 function renderDrugRows(){const host=$('drugs');host.innerHTML=state.drugs.map((d,i)=>`<div class="drug" data-index="${i}"><div class="drugname"><label>薬剤 ${i+1}・ルフレカラー 明度 / 色番</label>${shadeSelector(d.name)}<input data-field="name" value="${esc(d.name)}" maxlength="60" aria-label="薬剤${i+1}の名前"></div><div class="ratio"><label>配合方式</label><select data-field="mode" aria-label="薬剤${i+1}の方式"><option value="ratio" ${d.mode==='ratio'?'selected':''}>対比</option><option value="percent" ${d.mode==='percent'?'selected':''}>%</option></select></div><div class="amount"><label>${d.mode==='ratio'?'比率':'添加率 (%)'}</label><input data-field="value" type="number" inputmode="decimal" min="0" step="0.1" value="${esc(d.value)}" aria-label="薬剤${i+1}の数値"></div><div class="result number" id="drugResult${i}">—</div><button class="remove danger" data-remove="${i}" title="薬剤を削除">×</button></div>`).join('');$('count').textContent=state.drugs.length+'種類';}
-function update(){inputState();const main=calc(),extra=calc(state.extra),factor=oxyFactor();$('totalShow').textContent=state.total+'g';$('warning').textContent=main.error;$('colorResult').textContent=main.error?'—':fmt(state.total);$('oxyResult').textContent=main.error?'—':fmt(state.total*factor);$('finalResult').textContent=main.error?'—':fmt(state.total*(1+factor));$('extraOxy').textContent=extra.error?'—':fmt(state.extra*factor);$('oxyControls').classList.toggle('hide',!state.oxyEnabled);$('customWrap').classList.toggle('hide',state.oxyRatio!=='custom');state.drugs.forEach((d,i)=>{$('drugResult'+i).textContent=main.error?'—':fmt(main.values[i])});$('extraResults').innerHTML=extra.error?`<div class="warn">${esc(extra.error)}</div>`:state.drugs.map((d,i)=>`<div class="rowitem"><span>${esc(d.name||'薬剤'+(i+1))}</span><strong class="number">${fmt(extra.values[i])}</strong></div>`).join('');document.querySelectorAll('#presets button').forEach(b=>b.classList.toggle('active',Number(b.dataset.total)===state.total));persist()}
+function update(){inputState();const main=calc(),extra=calc(state.extra),factor=oxyFactor();$('totalShow').textContent=state.total+'g（目標）';$('warning').textContent=main.error||(main.exact?'整数gで比率を維持':'整数g優先の近似配合（比率にわずかな差があります）');$('colorResult').textContent=main.error?'—':fmt(main.total);$('oxyResult').textContent=main.error?'—':fmt(main.total*factor);$('finalResult').textContent=main.error?'—':fmt(main.total*(1+factor));$('extraOxy').textContent=extra.error?'—':fmt(extra.total*factor);$('oxyControls').classList.toggle('hide',!state.oxyEnabled);$('customWrap').classList.toggle('hide',state.oxyRatio!=='custom');state.drugs.forEach((d,i)=>{$('drugResult'+i).textContent=main.error?'—':fmt(main.values[i])});$('extraResults').innerHTML=extra.error?`<div class="warn">${esc(extra.error)}</div>`:state.drugs.map((d,i)=>`<div class="rowitem"><span>${esc(d.name||'薬剤'+(i+1))}</span><strong class="number">${fmt(extra.values[i])}</strong></div>`).join('');document.querySelectorAll('#presets button').forEach(b=>b.classList.toggle('active',Number(b.dataset.total)===state.total));persist()}
 function restoreInputs(){renderCustomHues();$('total').value=state.total;$('extra').value=state.extra;$('oxyEnabled').checked=state.oxyEnabled;$('oxyRatio').value=state.oxyRatio;$('oxyCustom').value=state.oxyCustom;renderDrugRows();renderSaved();update()}
 function changeCount(n){const count=Math.min(10,Math.max(1,n));while(state.drugs.length<count)state.drugs.push({name:'薬剤'+(state.drugs.length+1),mode:'ratio',value:1});state.drugs.length=count;renderDrugRows();update()}
 $('presets').innerHTML=[30,40,50,60,80,100,120,150,200].map(n=>`<button data-total="${n}">${n}g</button>`).join('');$('presets').addEventListener('click',e=>{const b=e.target.closest('[data-total]');if(b){$('total').value=b.dataset.total;update()}});
@@ -190,7 +258,7 @@ $('plus').onclick=()=>changeCount(state.drugs.length+1);$('minus').onclick=()=>c
 ['total','extra','oxyCustom'].forEach(id=>$(id).addEventListener('input',update));['oxyEnabled','oxyRatio'].forEach(id=>$(id).addEventListener('change',update));$('extra30').onclick=()=>{$('extra').value=30;update()};$('extra50').onclick=()=>{$('extra').value=50;update()};
 function snapshot(){return {total:state.total,drugs:state.drugs.map(d=>({...d})),oxyEnabled:state.oxyEnabled,oxyRatio:state.oxyRatio,oxyCustom:state.oxyCustom,extra:state.extra}}
 function loadSnapshot(s){state={...state,...s,drugs:s.drugs.map(d=>({...d}))};restoreInputs();window.scrollTo({top:0,behavior:'smooth'})}
-function summary(s=snapshot()){const result=calcFor(s);if(result.error)return '配合エラー: '+result.error;const f=s.oxyEnabled?(s.oxyRatio==='custom'?safe(s.oxyCustom):safe(s.oxyRatio)):0;return `カラー剤 ${fmt(s.total)}\n`+s.drugs.map((d,i)=>`${d.name||'薬剤'+(i+1)} [${d.mode==='percent'?safe(d.value)+'%':'対比 '+safe(d.value)}] ${fmt(result.values[i])}`).join('\n')+`\nオキシ ${fmt(s.total*f)}\n合計 ${fmt(s.total*(1+f))}`}
+function summary(s=snapshot()){const result=calcFor(s);if(result.error)return '配合エラー: '+result.error;const f=s.oxyEnabled?(s.oxyRatio==='custom'?safe(s.oxyCustom):safe(s.oxyRatio)):0;return `カラー剤 ${fmt(result.total)}（指定${fmt(s.total)}以上）\n`+s.drugs.map((d,i)=>`${d.name||'薬剤'+(i+1)} [${d.mode==='percent'?safe(d.value)+'%':'対比 '+safe(d.value)}] ${fmt(result.values[i])}`).join('\n')+`\nオキシ ${fmt(result.total*f)}\n合計 ${fmt(result.total*(1+f))}`}
 function renderSaved(){const recipe=$('recipes'),hist=$('history');recipe.innerHTML=state.recipes.length?state.recipes.map((r,i)=>`<div class="rowitem"><div class="info"><strong>${esc(r.name)}</strong><small>${esc(r.date||'')} · ${esc(r.data.drugs.length)}種類</small></div><div class="buttons"><button data-loadrecipe="${i}">呼出</button><button class="danger" data-delrecipe="${i}">削除</button></div></div>`).join(''):'<p class="muted">保存済みレシピはありません。</p>';hist.innerHTML=state.history.length?state.history.map((r,i)=>`<div class="rowitem"><div class="info"><strong>${esc(r.date)}</strong><small>${esc(r.data.total)}g · ${esc(r.data.drugs.map(d=>d.name).join(' / '))}</small></div><div class="buttons"><button data-loadhistory="${i}">呼出</button><button class="danger" data-delhistory="${i}">削除</button></div></div>`).join(''):'<p class="muted">履歴はまだありません。</p>'}
 function timestamp(){return new Date().toLocaleString('ja-JP')}
 $('saveRecipe').onclick=()=>{if(calc().error){alert('配合エラーを修正してください');return}const name=$('recipeName').value.trim()||'無題のレシピ';state.recipes.unshift({name,date:timestamp(),data:snapshot()});state.recipes=state.recipes.slice(0,100);$('recipeName').value='';renderSaved();persist()};
@@ -220,14 +288,14 @@ $('drugs').addEventListener('change',e=>{const row=e.target.closest('[data-index
 $('favorite').onclick=()=>{const name=state.drugs[Math.min(selectedDrug,state.drugs.length-1)].name.trim();if(!name)return;state.favorites=state.favorites||[];if(state.favorites.includes(name)){state.favorites=state.favorites.filter(x=>x!==name)}else state.favorites.unshift(name);favoriteList();persist()};
 $('favList').onclick=e=>{const b=e.target.closest('[data-fav]');if(b)applyColor(b.dataset.fav)};
 $('quickColor').onchange=e=>{applyColor(e.target.value);e.target.value=''};
-function oxyBlend(){const high=Number($('oxyHigh').value),low=Number($('oxyLow').value),target=Number($('oxyTarget').value);state.oxyHigh=high;state.oxyLow=low;state.oxyTarget=target;const oxy=state.total*oxyFactor();const valid=[high,low,target,oxy].every(Number.isFinite)&&high>low&&low>=0&&target>=low&&target<=high&&oxy>=0&&!calc().error;const hi=valid?oxy*(target-low)/(high-low):0;const lo=oxy-hi;$('oxyWarn').textContent=valid?'':'濃度を確認してください（高濃度 ＞ 低濃度、目標はその範囲内）。';$('oxyHighG').textContent=valid?fmt(hi):'—';$('oxyLowG').textContent=valid?fmt(lo):'—';$('oxyActual').textContent=valid?target+'%':'—';persist()}
+function oxyBlend(){const high=Number($('oxyHigh').value),low=Number($('oxyLow').value),target=Number($('oxyTarget').value);state.oxyHigh=high;state.oxyLow=low;state.oxyTarget=target;const oxy=calc().total*oxyFactor();const valid=[high,low,target,oxy].every(Number.isFinite)&&high>low&&low>=0&&target>=low&&target<=high&&oxy>=0&&!calc().error;const hi=valid?oxy*(target-low)/(high-low):0;const lo=oxy-hi;$('oxyWarn').textContent=valid?'':'濃度を確認してください（高濃度 ＞ 低濃度、目標はその範囲内）。';$('oxyHighG').textContent=valid?fmt(hi):'—';$('oxyLowG').textContent=valid?fmt(lo):'—';$('oxyActual').textContent=valid?target+'%':'—';persist()}
 ['oxyHigh','oxyLow','oxyTarget'].forEach(id=>$(id).addEventListener('input',oxyBlend));
 function filterRecipes(){const q=$('recipeSearch').value.trim().toLowerCase();document.querySelectorAll('#recipes .rowitem').forEach((el,i)=>{const r=state.recipes[i];el.classList.toggle('hide',!!q&&!(`${r.name} ${r.data.drugs.map(d=>d.name).join(' ')}`.toLowerCase().includes(q)))})}
 $('recipeSearch').addEventListener('input',filterRecipes);
 function fullSummary(){saveZone();let s='GT COLOR LAB PRO\n';for(const [k,v] of Object.entries(zoneNames)){const z=state.zones[k];if(!z)continue;s+='\n【'+v+'】\n'+summary(z)+'\n'}return s}
 $('share').onclick=async()=>{const txt=fullSummary();try{if(navigator.share)await navigator.share({title:'GT COLOR LAB PRO 配合',text:txt});else if(navigator.clipboard) {await navigator.clipboard.writeText(txt);alert('共有用の配合をコピーしました')}else prompt('コピーして共有してください',txt)}catch(e){if(e.name!=='AbortError')prompt('コピーして共有してください',txt)}};
 $('backupAll').onclick=()=>{saveZone();const blob=new Blob([JSON.stringify({version:4,state:{...state,customHues}},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='GT_COLOR_LAB_PRO_full_backup.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1500)};
-function renderWeigh(){saveZone();const r=calc();let html=`<p class="muted">${zoneNames[currentZone()]} · カラー剤 ${fmt(state.total)}</p>`;html+=r.error?`<p class="warn">${esc(r.error)}</p>`:state.drugs.map((d,i)=>`<div class="rowitem"><span>${esc(d.name)}</span><strong>${fmt(r.values[i])}</strong></div>`).join('');html+=`<div class="rowitem"><span>オキシ</span><strong>${fmt(state.total*oxyFactor())}</strong></div>`;$('weighContent').innerHTML=html}
+function renderWeigh(){saveZone();const r=calc();let html=`<p class="muted">${zoneNames[currentZone()]} · カラー剤 ${fmt(r.total)}</p>`;html+=r.error?`<p class="warn">${esc(r.error)}</p>`:state.drugs.map((d,i)=>`<div class="rowitem"><span>${esc(d.name)}</span><strong>${fmt(r.values[i])}</strong></div>`).join('');html+=`<div class="rowitem"><span>オキシ</span><strong>${fmt(r.total*oxyFactor())}</strong></div>`;$('weighContent').innerHTML=html}
 $('weigh').onclick=()=>{renderWeigh();$('weighOverlay').classList.remove('hide')};$('closeWeigh').onclick=()=>$('weighOverlay').classList.add('hide');
 // preserve extensions when using the original backup importer, support v4
 const oldImport=$('importFile').onchange;
@@ -291,9 +359,9 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
 <script>
 (()=>{
 const calc=document.getElementById('gtModeCalc'),recipe=document.getElementById('gtModeRecipe'),design=document.getElementById('gtModeDesign'),section=document.getElementById('recipeSection'),designSection=document.getElementById('designSection');
-const others=[...document.querySelectorAll('main > section')].filter(x=>x!==section&&x!==designSection);
-window.gtSwitchMode=function(which){const isRecipe=which==='recipe',isDesign=which==='design';section.hidden=!isRecipe;section.classList.toggle('gt-hidden-mode',!isRecipe);designSection.hidden=!isDesign;designSection.classList.toggle('gt-hidden-mode',!isDesign);others.forEach(el=>el.classList.toggle('gt-hidden-mode',isRecipe||isDesign));[[calc,'calc'],[recipe,'recipe'],[design,'design']].forEach(([b,v])=>{b.classList.toggle('active',which===v);b.setAttribute('aria-selected',String(which===v))});window.scrollTo({top:0,behavior:'smooth'})};
-calc.onclick=()=>window.gtSwitchMode('calc');recipe.onclick=()=>window.gtSwitchMode('recipe');design.onclick=()=>window.gtSwitchMode('design');window.gtSwitchMode('calc');
+const easySection=document.getElementById('gtEasySection'),easy=document.getElementById('gtModeEasy');const others=[...document.querySelectorAll('main > section')].filter(x=>x!==section&&x!==designSection&&x!==easySection);
+window.gtSwitchMode=function(which){const isRecipe=which==='recipe',isDesign=which==='design',isEasy=which==='easy';easySection.hidden=!isEasy;easySection.classList.toggle('gt-hidden-mode',!isEasy);section.hidden=!isRecipe;section.classList.toggle('gt-hidden-mode',!isRecipe);designSection.hidden=!isDesign;designSection.classList.toggle('gt-hidden-mode',!isDesign);others.forEach(el=>el.classList.toggle('gt-hidden-mode',isRecipe||isDesign||isEasy));[[calc,'calc'],[recipe,'recipe'],[design,'design'],[easy,'easy']].forEach(([b,v])=>{b.classList.toggle('active',which===v);b.setAttribute('aria-selected',String(which===v))});window.scrollTo({top:0,behavior:'smooth'})};
+calc.onclick=()=>window.gtSwitchMode('calc');recipe.onclick=()=>window.gtSwitchMode('recipe');design.onclick=()=>window.gtSwitchMode('design');easy.onclick=()=>window.gtSwitchMode('easy');window.gtSwitchMode('calc');
 // Parses only unambiguous source expressions; never guesses missing percentages.
 window.gtParseRecipe=function(raw){
  const normalize=s=>String(s||'').normalize('NFKC').replace(/[：]/g,':').replace(/[＝]/g,'=').replace(/[＋]/g,'+').replace(/[×]/g,'×').replace(/[（]/g,'(').replace(/[）]/g,')').replace(/[％]/g,'%').replace(/\s+/g,'');
@@ -509,9 +577,9 @@ function calculate(){
  const rows=[...mix].filter(x=>x[1]>0);
  const tone=finish==='clear'?'透明感重視':finish==='vivid'?'色味重視':'ナチュラル仕上げ';
  const ox=target<=9?'3%':'3%（要調整）';
- const formula=rows.map(([name,pct])=>`${name} ${pct}%（${(grams*pct/100).toFixed(1)}g）`).join('\n');
- const memo=`GT COLOR DESIGN｜概算配合案\nベース${base}Lv / ${names[goal]} ${target}Lv / ${tone}\n${formula}\n1剤合計 ${grams}g\nOX濃度候補 ${ox}（混合倍率は製品指示で確認）\n※毛束テスト前提の未検証案`;
- host.innerHTML=`<h3>✦ N.ルフレ 概算配合レシピ</h3><div class="dr-note">${esc(names[goal])} ${target}Lv · ${esc(tone)} · ブリーチ${base}Lv</div><div class="dr-total"><strong>1剤合計 ${grams}g</strong><div class="dr-note">配合比率を100%として計算</div></div>${rows.map(([name,pct])=>`<div class="dr-row"><span>${esc(name)} <small>(${pct}%)</small></span><strong>${(grams*pct/100).toFixed(1)} g</strong></div>`).join('')}<div class="dr-row"><span>OX濃度候補</span><strong>${ox}</strong></div><p class="dr-note">${esc(adj[1])}。補色量・クリア量は仮の初期値です。ベースの実際の色素量、履歴、毛髪状態によって変更してください。</p><p class="dr-note">⚠️ この配合は自動生成した未検証の概算案で、メーカー公式レシピや発色保証ではありません。薬剤の使用可否、OX濃度・混合比・放置時間はメーカー指示に従い、必ず毛束テストで確認してください。</p><button type="button" id="gtDirectCopy">配合メモをコピー</button>`;
+ const integer=window.gtRoundFormula(rows.map(r=>r[1]),grams);const actual=integer.total;const formula=rows.map(([name,pct],i)=>`${name} ${pct}%（${integer.values[i]}g）`).join('\n');
+ const memo=`GT COLOR DESIGN｜概算配合案\nベース${base}Lv / ${names[goal]} ${target}Lv / ${tone}\n${formula}\n1剤合計 ${actual}g（指定${grams}g以上）\nOX濃度候補 ${ox}（混合倍率は製品指示で確認）\n※毛束テスト前提の未検証案`;
+ host.innerHTML=`<h3>✦ N.ルフレ 概算配合レシピ</h3><div class="dr-note">${esc(names[goal])} ${target}Lv · ${esc(tone)} · ブリーチ${base}Lv</div><div class="dr-total"><strong>1剤合計 ${actual}g</strong><div class="dr-note">指定${grams}g以上・${integer.exact?"比率維持":"整数gで近似"}。配合比率を100%として計算</div></div>${rows.map(([name,pct])=>`<div class="dr-row"><span>${esc(name)} <small>(${pct}%)</small></span><strong>${integer.values[rows.findIndex(r=>r[0]===name)]} g</strong></div>`).join('')}<div class="dr-row"><span>OX濃度候補</span><strong>${ox}</strong></div><p class="dr-note">${esc(adj[1])}。補色量・クリア量は仮の初期値です。ベースの実際の色素量、履歴、毛髪状態によって変更してください。</p><p class="dr-note">⚠️ この配合は自動生成した未検証の概算案で、メーカー公式レシピや発色保証ではありません。薬剤の使用可否、OX濃度・混合比・放置時間はメーカー指示に従い、必ず毛束テストで確認してください。</p><button type="button" id="gtDirectCopy">配合メモをコピー</button>`;
  $('gtDirectCopy').onclick=()=>{if(navigator.clipboard?.writeText)navigator.clipboard.writeText(memo).catch(()=>fallback(memo));else fallback(memo)};
  function fallback(t){const x=document.createElement('textarea');x.value=t;document.body.append(x);x.select();document.execCommand('copy');x.remove()}
 }
@@ -522,4 +590,28 @@ for(const id of ['gtVisualTargetSlider','gtVisualGramsSlider'])$(id)?.addEventLi
 calculate();
 })();
 </script>
-</body></html>
+
+<script>
+(()=>{'use strict';
+const $=id=>document.getElementById(id);
+let ratios=[3,2,1],result=null;
+const fmt=n=>Number.isInteger(n)?n+'g':n.toFixed(1)+'g';
+function renderRows(){ $('gtEasyRows').innerHTML=ratios.map((v,i)=>`<div class="gt-easy-row"><span class="gt-easy-tag">薬剤 ${String.fromCharCode(65+i)}</span><input type="number" inputmode="decimal" min="0" step="0.1" data-easy="${i}" value="${v}" aria-label="薬剤${i+1}の比率"><span class="gt-easy-grams" id="gtEasyGram${i}">—</span></div>`).join('');calc() }
+function calc(){
+ const requested=Math.max(1,Math.ceil(Number($('gtEasyTotal').value)||1));const sum=ratios.reduce((a,b)=>a+b,0);
+ if(sum<=0){$('gtEasyResult').textContent='比率を入力してください。';result=null;return}
+ result=window.gtRoundFormula(ratios,requested);
+ const oxy=Number($('gtEasyOxy').value),oxyG=result.total*oxy;
+ ratios.forEach((_,i)=>$('gtEasyGram'+i).textContent=fmt(result.values[i]));
+ $('gtEasyResult').innerHTML=`<div class="gt-easy-kicker">整数gで量れる配合</div><div class="gt-easy-big">1剤合計 <strong>${fmt(result.total)}</strong></div><p>指定 ${fmt(requested)} → 実際 ${fmt(result.total)} ${result.exact?'（比率を維持）':'（比率を近似調整）'}</p><div class="gt-easy-line-result"><span>2剤</span><strong>${fmt(oxyG)}</strong></div><div class="gt-easy-line-result"><span>総量（1剤＋2剤）</span><strong>${fmt(result.total+oxyG)}</strong></div>${result.exact?'':'<p class="hint">整数gにするため、指定比率と少し異なります。</p>'}`;
+}
+$('gtEasyRows').addEventListener('input',e=>{const i=Number(e.target.dataset.easy);if(Number.isInteger(i)&&i>=0&&i<ratios.length){ratios[i]=Math.max(0,Number(e.target.value)||0);calc()}});
+$('gtEasyPlus').onclick=()=>{if(ratios.length<10){ratios.push(1);renderRows()}};
+$('gtEasyMinus').onclick=()=>{if(ratios.length>2){ratios.pop();renderRows()}};
+$('gtEasyTotal').addEventListener('input',calc);$('gtEasyOxy').addEventListener('change',calc);
+$('gtEasyPresets').innerHTML=[30,50,80,100,120,150,200].map(n=>`<button type="button" data-easytotal="${n}">${n}g</button>`).join('');
+$('gtEasyPresets').onclick=e=>{const b=e.target.closest('[data-easytotal]');if(b){$('gtEasyTotal').value=b.dataset.easytotal;calc()}};
+$('gtEasyCopy').onclick=async()=>{if(!result)return;const oxy=Number($('gtEasyOxy').value);const s=`GT かんたん配合計算\n${ratios.map((r,i)=>`薬剤 ${String.fromCharCode(65+i)} 比率${r}：${result.values[i]}g`).join('\n')}\n1剤合計 ${result.total}g\n2剤 ${fmt(result.total*oxy)}\n総量 ${fmt(result.total*(1+oxy))}\n${result.exact?'比率維持':'整数gで近似調整'}`;try{await navigator.clipboard.writeText(s);alert('コピーしました')}catch(e){const t=document.createElement('textarea');t.value=s;document.body.append(t);t.select();document.execCommand('copy');t.remove();alert('コピーしました')}};
+renderRows();
+})();
+</script></body></html>
