@@ -98,7 +98,27 @@ window.gtRoundFormula=function(pcts,target){
   if(!best||score<best.score)best={values,total,exact:false,score};
  }return best;
 };
-</script></head><body><main><header class="top"><div><div class="eyebrow">HAIRHOUSE GT · PROFESSIONAL TOOL</div><h1>COLOR LAB <span>PRO</span></h1><div class="sub">カラー剤の配合を、すばやく正確に。</div></div><button id="reset" title="初期状態に戻す">初期化</button></header><div class="gt-mode-switch" role="tablist" aria-label="モード切替"><button type="button" id="gtModeCalc" class="active" aria-selected="true">COLOR LAB｜配合計算</button><button type="button" id="gtModeRecipe" aria-selected="false">PHOTO RECIPE｜写真付きレシピ</button><button type="button" id="gtModeDesign" aria-selected="false">COLOR DESIGN｜N.ルフレ配合提案</button><button type="button" id="gtModeEasy" aria-selected="false">かんたん計算｜薬剤選定なし</button></div>
+</script><style id="gt-mobile-nav-fix-v14">
+/* Responsive mode navigation: two-by-two on phones, four columns on larger screens. */
+.gt-mode-switch{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:12px!important;margin:20px 0!important}
+.gt-mode-switch button{width:100%!important;min-width:0!important;min-height:94px!important;padding:16px 9px!important;display:flex!important;flex-direction:column;align-items:center;justify-content:center;gap:6px;line-height:1.25!important;text-align:center;overflow-wrap:normal!important;word-break:keep-all!important;white-space:normal!important;flex:none!important}
+.gt-mode-title{display:block;font-size:clamp(13px,1.7vw,17px);font-weight:850;letter-spacing:-.02em;white-space:nowrap}
+.gt-mode-desc{display:block;font-size:clamp(11px,1.3vw,13px);font-weight:600;opacity:.8;white-space:nowrap}
+.gt-mode-switch button:nth-child(4){background:linear-gradient(135deg,#ffe0b1,#f5ce88)!important}
+@media(max-width:700px){
+ .gt-mode-switch{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:11px!important}
+ .gt-mode-switch button{min-height:87px!important;padding:13px 5px!important;border-radius:19px!important}
+ .gt-mode-title{font-size:clamp(14px,3.7vw,17px)!important}
+ .gt-mode-desc{font-size:clamp(11px,3vw,13px)!important}
+ .top{align-items:flex-start!important;gap:10px!important}
+ .top>div{min-width:0;flex:1}
+ .top #reset{flex:0 0 auto;min-width:0;max-width:76px;font-size:12px!important;padding:9px 10px!important;line-height:1.3!important;overflow-wrap:anywhere}
+ .top .eyebrow{font-size:10px;letter-spacing:.07em}
+ .top h1{font-size:clamp(24px,6.2vw,35px)!important}
+ .top .sub{font-size:12px}
+}
+@media(max-width:340px){.gt-mode-title{font-size:12px!important}.gt-mode-desc{font-size:10px!important}}
+</style></head><body><main><header class="top"><div><div class="eyebrow">HAIRHOUSE GT · PROFESSIONAL TOOL</div><h1>COLOR LAB <span>PRO</span></h1><div class="sub">カラー剤の配合を、すばやく正確に。</div></div><button id="reset" title="初期状態に戻す">初期化</button></header><div class="gt-mode-switch" role="tablist" aria-label="モード切替"><button type="button" id="gtModeCalc" class="active" aria-selected="true"><span class="gt-mode-title">COLOR LAB</span><span class="gt-mode-desc">配合計算</span></button><button type="button" id="gtModeRecipe" aria-selected="false"><span class="gt-mode-title">PHOTO RECIPE</span><span class="gt-mode-desc">写真付きレシピ</span></button><button type="button" id="gtModeDesign" aria-selected="false"><span class="gt-mode-title">COLOR DESIGN</span><span class="gt-mode-desc">ルフレ配合提案</span></button><button type="button" id="gtModeEasy" aria-selected="false"><span class="gt-mode-title">かんたん計算</span><span class="gt-mode-desc">薬剤選定なし</span></button></div>
 <section class="panel gt-hidden-mode" id="gtEasySection" hidden>
 <h2>🧮 かんたん配合計算</h2><p class="hint">薬剤選定なし。比率と必要量を入れるだけ。1g単位で量れるよう、合計量を自動調整します。</p>
 <div class="gt-easy-target"><label for="gtEasyTotal">必要な1剤の量（これ以上作る）</label><div class="gt-easy-line"><input id="gtEasyTotal" type="number" min="1" max="10000" step="1" value="100" inputmode="numeric"><strong>g</strong></div><div class="pills" id="gtEasyPresets"></div></div>

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'gt-color-lab-pro-pwa-v13-integer-easy-20261023';
+const CACHE_NAME = 'gt-color-lab-pro-pwa-v14-mobile-tabs-20261023';
 const FILES = ['./index.html', './manifest.webmanifest', './recipes.json', './icon-192.png', './icon-512.png'];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(FILES)).then(() => self.skipWaiting()));
