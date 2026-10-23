@@ -76,13 +76,13 @@ footer{color:#888fa6}
 .gt-easy-target{background:#fff;border-radius:20px;padding:18px;border:1px solid #f2e3ee}
 .gt-easy-line{display:flex;align-items:center;gap:12px}.gt-easy-line input{font-size:30px;font-weight:800;max-width:220px}
 .gt-easy-header{display:flex;justify-content:space-between;align-items:center;margin:22px 0 12px}.gt-easy-header h3{margin:0}.gt-easy-header button{background:#e6edff;color:#283650;border:0;margin-left:6px}
-.gt-easy-row{display:grid;grid-template-columns:1fr 90px 1fr;gap:10px;align-items:center;background:white;padding:12px;border-radius:17px;margin:9px 0;border:1px solid #ebebf5}
+.gt-easy-row{display:grid;grid-template-columns:minmax(62px,1fr) minmax(76px,95px) minmax(60px,90px) minmax(65px,1fr);gap:10px;align-items:center;background:white;padding:12px;border-radius:17px;margin:9px 0;border:1px solid #ebebf5}
 .gt-easy-tag{font-weight:700}.gt-easy-row input{text-align:center;font-size:22px;font-weight:800}.gt-easy-grams{text-align:right;color:#db5493;font-size:23px;font-weight:900}
 .gt-easy-result{margin:18px 0;padding:20px;border-radius:22px;background:linear-gradient(120deg,#ffe5f0,#e0f5ff);color:#283147}
 .gt-easy-kicker{font-size:13px;font-weight:700;color:#8b5472}.gt-easy-big{font-size:20px;margin:10px 0}.gt-easy-big strong{font-size:34px;color:#cf4d8e}
 .gt-easy-line-result{display:flex;justify-content:space-between;padding:10px 0;border-top:1px solid #ffffffbb}
 .gt-easy-oxy{padding:14px 0}#gtEasyCopy{background:linear-gradient(100deg,#fa72ad,#ffb36b);color:white;border:0;width:100%;border-radius:18px}
-@media(max-width:480px){.gt-easy-row{grid-template-columns:1fr 75px 90px}.gt-easy-grams{font-size:20px}.gt-mode-switch button{font-size:12px;min-height:65px}}
+@media(max-width:480px){.gt-easy-row{grid-template-columns:minmax(48px,1fr) 75px 62px 62px;gap:5px;padding:9px 7px}.gt-easy-row select,.gt-easy-row input{min-width:0;width:100%;padding:8px 2px;font-size:16px}.gt-easy-tag{font-size:13px}.gt-easy-grams{font-size:20px}.gt-mode-switch button{font-size:12px;min-height:65px}}
 </style><script>
 window.gtRoundFormula=function(pcts,target){
  const req=Math.max(1,Math.ceil(Number(target)||1));const weights=pcts.map(x=>Number(x)/pcts.reduce((a,b)=>a+Number(b),0));
@@ -122,8 +122,8 @@ window.gtRoundFormula=function(pcts,target){
 <section class="panel gt-hidden-mode" id="gtEasySection" hidden>
 <h2>🧮 かんたん配合計算</h2><p class="hint">薬剤選定なし。比率と必要量を入れるだけ。1g単位で量れるよう、合計量を自動調整します。</p>
 <div class="gt-easy-target"><label for="gtEasyTotal">必要な1剤の量（これ以上作る）</label><div class="gt-easy-line"><input id="gtEasyTotal" type="number" min="1" max="10000" step="1" value="100" inputmode="numeric"><strong>g</strong></div><div class="pills" id="gtEasyPresets"></div></div>
-<div class="gt-easy-header"><h3>配合比率</h3><div><button type="button" id="gtEasyMinus">−</button><button type="button" id="gtEasyPlus">＋ 薬剤</button></div></div>
-<div id="gtEasyRows"></div>
+<div class="gt-easy-header"><h3>配合方式・比率</h3><div><button type="button" id="gtEasyMinus">−</button><button type="button" id="gtEasyPlus">＋ 薬剤</button></div></div>
+<p class="hint">各薬剤で「対比」または「％」を選択。例：A 3（対比）・B 2（対比）・C 10％ → 残り90％を3：2で分配します。</p><div id="gtEasyRows"></div>
 <div class="gt-easy-result" aria-live="polite" id="gtEasyResult"></div>
 <div class="gt-easy-oxy"><label for="gtEasyOxy">2剤の倍率（1剤に対して）</label><select id="gtEasyOxy"><option value="0">計算しない</option><option value="1" selected>1：1</option><option value="1.5">1：1.5</option><option value="2">1：2</option></select><p class="hint">2剤は計算上の参考量です。製品指定の倍率を確認してください。</p></div>
 <button class="primary" type="button" id="gtEasyCopy">配合結果をコピー</button>
@@ -614,24 +614,33 @@ calculate();
 <script>
 (()=>{'use strict';
 const $=id=>document.getElementById(id);
-let ratios=[3,2,1],result=null;
+let drugs=[{mode:'ratio',value:3},{mode:'ratio',value:2},{mode:'ratio',value:1}],result=null;
 const fmt=n=>Number.isInteger(n)?n+'g':n.toFixed(1)+'g';
-function renderRows(){ $('gtEasyRows').innerHTML=ratios.map((v,i)=>`<div class="gt-easy-row"><span class="gt-easy-tag">薬剤 ${String.fromCharCode(65+i)}</span><input type="number" inputmode="decimal" min="0" step="0.1" data-easy="${i}" value="${v}" aria-label="薬剤${i+1}の比率"><span class="gt-easy-grams" id="gtEasyGram${i}">—</span></div>`).join('');calc() }
-function calc(){
- const requested=Math.max(1,Math.ceil(Number($('gtEasyTotal').value)||1));const sum=ratios.reduce((a,b)=>a+b,0);
- if(sum<=0){$('gtEasyResult').textContent='比率を入力してください。';result=null;return}
- result=window.gtRoundFormula(ratios,requested);
- const oxy=Number($('gtEasyOxy').value),oxyG=result.total*oxy;
- ratios.forEach((_,i)=>$('gtEasyGram'+i).textContent=fmt(result.values[i]));
- $('gtEasyResult').innerHTML=`<div class="gt-easy-kicker">整数gで量れる配合</div><div class="gt-easy-big">1剤合計 <strong>${fmt(result.total)}</strong></div><p>指定 ${fmt(requested)} → 実際 ${fmt(result.total)} ${result.exact?'（比率を維持）':'（比率を近似調整）'}</p><div class="gt-easy-line-result"><span>2剤</span><strong>${fmt(oxyG)}</strong></div><div class="gt-easy-line-result"><span>総量（1剤＋2剤）</span><strong>${fmt(result.total+oxyG)}</strong></div>${result.exact?'':'<p class="hint">整数gにするため、指定比率と少し異なります。</p>'}`;
+const escapeHtml=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function renderRows(){
+ $('gtEasyRows').innerHTML=drugs.map((d,i)=>`<div class="gt-easy-row"><span class="gt-easy-tag">薬剤 ${String.fromCharCode(65+i)}</span><select data-easy-mode="${i}" aria-label="薬剤${i+1}の配合方式"><option value="ratio" ${d.mode==='ratio'?'selected':''}>対比</option><option value="percent" ${d.mode==='percent'?'selected':''}>％</option></select><input type="number" inputmode="decimal" min="0" step="0.1" data-easy="${i}" value="${escapeHtml(d.value)}" aria-label="薬剤${i+1}の${d.mode==='percent'?'割合（％）':'対比'}"><span class="gt-easy-grams" id="gtEasyGram${i}">—</span></div>`).join('');calc();
 }
-$('gtEasyRows').addEventListener('input',e=>{const i=Number(e.target.dataset.easy);if(Number.isInteger(i)&&i>=0&&i<ratios.length){ratios[i]=Math.max(0,Number(e.target.value)||0);calc()}});
-$('gtEasyPlus').onclick=()=>{if(ratios.length<10){ratios.push(1);renderRows()}};
-$('gtEasyMinus').onclick=()=>{if(ratios.length>2){ratios.pop();renderRows()}};
+function calc(){
+ const requested=Math.max(1,Math.ceil(Number($('gtEasyTotal').value)||1));
+ const percent=drugs.reduce((a,d)=>a+(d.mode==='percent'?d.value:0),0);
+ const ratio=drugs.reduce((a,d)=>a+(d.mode==='ratio'?d.value:0),0);
+ const error=percent>100?'％の合計が100％を超えています。':percent<100&&ratio<=0?'残りを分配する「対比」の薬剤が必要です。':drugs.every(d=>d.value===0)?'数値を入力してください。':'';
+ if(error){$('gtEasyResult').textContent=error;drugs.forEach((_,i)=>$('gtEasyGram'+i).textContent='—');result=null;return;}
+ const weights=drugs.map(d=>d.mode==='percent'?d.value/100:(1-percent/100)*d.value/(ratio||1));
+ result=window.gtRoundFormula(weights,requested);
+ if(!result||!result.values){$('gtEasyResult').textContent='計算できませんでした。';return;}
+ const oxy=Number($('gtEasyOxy').value),oxyG=result.total*oxy;
+ drugs.forEach((_,i)=>$('gtEasyGram'+i).textContent=fmt(result.values[i]));
+ $('gtEasyResult').innerHTML=`<div class="gt-easy-kicker">整数gで量れる配合</div><div class="gt-easy-big">1剤合計 <strong>${fmt(result.total)}</strong></div><p>指定 ${fmt(requested)} → 実際 ${fmt(result.total)} ${result.exact?'（配合比率を維持）':'（配合比率を近似調整）'}</p><div class="gt-easy-line-result"><span>2剤</span><strong>${fmt(oxyG)}</strong></div><div class="gt-easy-line-result"><span>総量（1剤＋2剤）</span><strong>${fmt(result.total+oxyG)}</strong></div>${result.exact?'':'<p class="hint">整数gにするため、指定比率と少し異なります。</p>'}`;
+}
+$('gtEasyRows').addEventListener('input',e=>{const i=Number(e.target.dataset.easy);if(e.target.matches('[data-easy]')&&Number.isInteger(i)&&i>=0&&i<drugs.length){drugs[i].value=Math.max(0,Number(e.target.value)||0);calc()}});
+$('gtEasyRows').addEventListener('change',e=>{if(!e.target.matches('[data-easy-mode]'))return;const i=Number(e.target.dataset.easyMode);if(Number.isInteger(i)&&drugs[i]){drugs[i].mode=e.target.value;calc()}});
+$('gtEasyPlus').onclick=()=>{if(drugs.length<10){drugs.push({mode:'ratio',value:1});renderRows()}};
+$('gtEasyMinus').onclick=()=>{if(drugs.length>2){drugs.pop();renderRows()}};
 $('gtEasyTotal').addEventListener('input',calc);$('gtEasyOxy').addEventListener('change',calc);
 $('gtEasyPresets').innerHTML=[30,50,80,100,120,150,200].map(n=>`<button type="button" data-easytotal="${n}">${n}g</button>`).join('');
 $('gtEasyPresets').onclick=e=>{const b=e.target.closest('[data-easytotal]');if(b){$('gtEasyTotal').value=b.dataset.easytotal;calc()}};
-$('gtEasyCopy').onclick=async()=>{if(!result)return;const oxy=Number($('gtEasyOxy').value);const s=`GT かんたん配合計算\n${ratios.map((r,i)=>`薬剤 ${String.fromCharCode(65+i)} 比率${r}：${result.values[i]}g`).join('\n')}\n1剤合計 ${result.total}g\n2剤 ${fmt(result.total*oxy)}\n総量 ${fmt(result.total*(1+oxy))}\n${result.exact?'比率維持':'整数gで近似調整'}`;try{await navigator.clipboard.writeText(s);alert('コピーしました')}catch(e){const t=document.createElement('textarea');t.value=s;document.body.append(t);t.select();document.execCommand('copy');t.remove();alert('コピーしました')}};
+$('gtEasyCopy').onclick=async()=>{if(!result)return;const oxy=Number($('gtEasyOxy').value);const s=`GT かんたん配合計算\n${drugs.map((d,i)=>`薬剤 ${String.fromCharCode(65+i)} ${d.mode==='percent'?d.value+'％':'対比 '+d.value}：${result.values[i]}g`).join('\n')}\n1剤合計 ${result.total}g\n2剤 ${fmt(result.total*oxy)}\n総量 ${fmt(result.total*(1+oxy))}\n${result.exact?'比率維持':'整数gで近似調整'}`;try{await navigator.clipboard.writeText(s);alert('コピーしました')}catch(e){const t=document.createElement('textarea');t.value=s;document.body.append(t);t.select();document.execCommand('copy');t.remove();alert('コピーしました')}};
 renderRows();
 })();
 </script></body></html>
