@@ -118,7 +118,20 @@ window.gtRoundFormula=function(pcts,target){
  .top .sub{font-size:12px}
 }
 @media(max-width:340px){.gt-mode-title{font-size:12px!important}.gt-mode-desc{font-size:10px!important}}
-</style></head><body><main><header class="top"><div><div class="eyebrow">HAIRHOUSE GT · PROFESSIONAL TOOL</div><h1>COLOR LAB <span>PRO</span></h1><div class="sub">カラー剤の配合を、すばやく正確に。</div></div><button id="reset" title="初期状態に戻す">初期化</button></header><div class="gt-mode-switch" role="tablist" aria-label="モード切替"><button type="button" id="gtModeCalc" class="active" aria-selected="true"><span class="gt-mode-title">COLOR LAB</span><span class="gt-mode-desc">配合計算</span></button><button type="button" id="gtModeRecipe" aria-selected="false"><span class="gt-mode-title">PHOTO RECIPE</span><span class="gt-mode-desc">写真付きレシピ</span></button><button type="button" id="gtModeDesign" aria-selected="false"><span class="gt-mode-title">COLOR DESIGN</span><span class="gt-mode-desc">ルフレ配合提案</span></button><button type="button" id="gtModeEasy" aria-selected="false"><span class="gt-mode-title">かんたん計算</span><span class="gt-mode-desc">薬剤選定なし</span></button></div>
+
+/* PWA installation guide */
+.gt-install-panel{margin:14px 0 18px;padding:15px 17px;border-radius:22px;background:linear-gradient(115deg,#fff4f9,#e9f8ff);border:1px solid #fff;box-shadow:0 8px 26px rgba(46,65,91,.10);color:#26354f}
+.gt-install-inner{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.gt-install-title{font-weight:800;font-size:16px;color:#25324b}
+.gt-install-caption{font-size:12px;color:#52617b;margin-top:4px}
+.gt-install-button{background:linear-gradient(100deg,#ee79b4,#639fea);border:0;border-radius:999px;color:white;font-size:14px;font-weight:800;padding:12px 19px;min-height:46px;cursor:pointer;white-space:nowrap}
+.gt-install-help{font-size:13px;line-height:1.75;margin-top:12px;padding:11px 13px;border-radius:14px;background:#ffffffd9;color:#34425a}
+.gt-install-help[hidden],.gt-install-panel[hidden]{display:none!important}
+@media(max-width:420px){.gt-install-inner{align-items:stretch}.gt-install-button{width:100%}}
+</style></head><body><main><header class="top"><div><div class="eyebrow">HAIRHOUSE GT · PROFESSIONAL TOOL</div><h1>COLOR LAB <span>PRO</span></h1><div class="sub">カラー剤の配合を、すばやく正確に。</div></div><button id="reset" title="初期状態に戻す">初期化</button></header><section id="gtInstallPanel" class="gt-install-panel" aria-label="アプリのインストール案内" hidden>
+ <div class="gt-install-inner"><div><div class="gt-install-title">📲 ホーム画面にアプリを追加</div><div class="gt-install-caption">GT COLOR LAB PROをワンタップで起動</div></div><button type="button" id="gtInstallButton" class="gt-install-button">インストールする</button></div>
+ <div id="gtInstallHelp" class="gt-install-help" hidden role="status"></div>
+</section><div class="gt-mode-switch" role="tablist" aria-label="モード切替"><button type="button" id="gtModeCalc" class="active" aria-selected="true"><span class="gt-mode-title">COLOR LAB</span><span class="gt-mode-desc">配合計算</span></button><button type="button" id="gtModeRecipe" aria-selected="false"><span class="gt-mode-title">PHOTO RECIPE</span><span class="gt-mode-desc">写真付きレシピ</span></button><button type="button" id="gtModeDesign" aria-selected="false"><span class="gt-mode-title">COLOR DESIGN</span><span class="gt-mode-desc">ルフレ配合提案</span></button><button type="button" id="gtModeEasy" aria-selected="false"><span class="gt-mode-title">かんたん計算</span><span class="gt-mode-desc">薬剤選定なし</span></button></div>
 <section class="panel gt-hidden-mode" id="gtEasySection" hidden>
 <h2>🧮 かんたん配合計算</h2><p class="hint">薬剤選定なし。比率と必要量を入れるだけ。1g単位で量れるよう、合計量を自動調整します。</p>
 <div class="gt-easy-target"><label for="gtEasyTotal">必要な1剤の量（これ以上作る）</label><div class="gt-easy-line"><input id="gtEasyTotal" type="number" min="1" max="10000" step="1" value="100" inputmode="numeric"><strong>g</strong></div><div class="pills" id="gtEasyPresets"></div></div>
@@ -643,4 +656,41 @@ $('gtEasyPresets').onclick=e=>{const b=e.target.closest('[data-easytotal]');if(b
 $('gtEasyCopy').onclick=async()=>{if(!result)return;const oxy=Number($('gtEasyOxy').value);const s=`GT かんたん配合計算\n${drugs.map((d,i)=>`薬剤 ${String.fromCharCode(65+i)} ${d.mode==='percent'?d.value+'％':'対比 '+d.value}：${result.values[i]}g`).join('\n')}\n1剤合計 ${result.total}g\n2剤 ${fmt(result.total*oxy)}\n総量 ${fmt(result.total*(1+oxy))}\n${result.exact?'比率維持':'整数gで近似調整'}`;try{await navigator.clipboard.writeText(s);alert('コピーしました')}catch(e){const t=document.createElement('textarea');t.value=s;document.body.append(t);t.select();document.execCommand('copy');t.remove();alert('コピーしました')}};
 renderRows();
 })();
-</script></body></html>
+</script>
+<script>
+(()=>{
+  'use strict';
+  const panel=document.getElementById('gtInstallPanel');
+  const button=document.getElementById('gtInstallButton');
+  const help=document.getElementById('gtInstallHelp');
+  if(!panel||!button||!help)return;
+  const standalone=()=>window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone===true;
+  const ua=navigator.userAgent||'';
+  const ios=/iPhone|iPad|iPod/i.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+  let pending=null;
+  const showHelp=(message)=>{help.textContent=message;help.hidden=false;};
+  const update=()=>{
+    if(standalone()){panel.hidden=true;return;}
+    panel.hidden=false;
+    button.textContent=pending?'アプリをインストール':ios?'追加方法を見る':'インストールする';
+  };
+  window.addEventListener('beforeinstallprompt',event=>{
+    event.preventDefault();pending=event;help.hidden=true;update();
+  });
+  window.addEventListener('appinstalled',()=>{pending=null;panel.hidden=true;});
+  button.addEventListener('click',async()=>{
+    if(pending){
+      const event=pending;pending=null;
+      try{await event.prompt();const choice=await event.userChoice;
+        if(choice&&choice.outcome==='accepted'){showHelp('インストールの処理が始まりました。ホーム画面をご確認ください。');}
+        else{showHelp('インストールは見送られました。後からブラウザのメニューから追加できます。');}
+      }catch(e){showHelp('ブラウザのメニューから「アプリをインストール」または「ホーム画面に追加」を選んでください。');}
+      update();return;
+    }
+    if(ios){showHelp('Safariで開き、共有ボタン →「ホーム画面に追加」→「追加」を選んでください。Chromeの場合は共有メニュー内の「ホーム画面に追加」をご確認ください。');}
+    else{showHelp('Chromeの右上「︙」メニューから「アプリをインストール」または「ホーム画面に追加」を選んでください。表示されない場合はChromeで直接このページを開いてください。');}
+  });
+  update();
+})();
+</script>
+</body></html>
