@@ -1,4 +1,4 @@
-const CACHE_NAME = 'gt-color-lab-pro-pwa-v16-install-20261025';
+const CACHE_NAME = 'gt-color-lab-pro-pwa-v18-ai-free-history-20261027';
 const FILES = ['./index.html', './manifest.webmanifest', './recipes.json', './icon-192.png', './icon-512.png'];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(FILES)).then(() => self.skipWaiting()));

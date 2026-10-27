@@ -128,10 +128,37 @@ window.gtRoundFormula=function(pcts,target){
 .gt-install-help{font-size:13px;line-height:1.75;margin-top:12px;padding:11px 13px;border-radius:14px;background:#ffffffd9;color:#34425a}
 .gt-install-help[hidden],.gt-install-panel[hidden]{display:none!important}
 @media(max-width:420px){.gt-install-inner{align-items:stretch}.gt-install-button{width:100%}}
+
+/* GT AI COLOR ADVISOR: offline rule-based demo */
+.gt-mode-switch{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+@media(min-width:850px){.gt-mode-switch{grid-template-columns:repeat(5,minmax(0,1fr))!important}}
+#gtModeAI{background:linear-gradient(130deg,#d9c8ff,#c5ecfb);color:#293651}
+#gtAISection .ai-field{margin:14px 0}#gtAISection .ai-field label{display:block;font-weight:750;margin-bottom:8px}
+#gtAISection .ai-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+#gtAISection .ai-choice{min-height:49px;padding:10px;border-radius:15px;border:2px solid #e7e0f1;background:#fff;color:#26324b;font-weight:700;overflow-wrap:anywhere}
+#gtAISection .ai-choice[aria-pressed=true]{border-color:#b66dde;background:#f5e8ff;box-shadow:0 0 0 2px #ead4fa}
+#gtAISection .ai-result{background:#fff;border:1px solid #e9d7f1;border-radius:19px;padding:17px;margin-top:15px;color:#26324b}
+#gtAISection .ai-result h3{color:#824fb0;margin:0 0 10px}
+#gtAISection .ai-row{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid #f0e9f4}
+#gtAISection .ai-row strong{white-space:nowrap}#gtAISection .ai-muted{color:#626a7c;font-size:13px;line-height:1.7}
+#gtAISection input,#gtAISection select{width:100%;max-width:100%;box-sizing:border-box}
+#gtAISection .ai-action{width:100%;background:linear-gradient(110deg,#ce79c9,#7d9ce7);color:white;border:0;border-radius:15px;min-height:50px;font-weight:800}
 </style></head><body><main><header class="top"><div><div class="eyebrow">HAIRHOUSE GT · PROFESSIONAL TOOL</div><h1>COLOR LAB <span>PRO</span></h1><div class="sub">カラー剤の配合を、すばやく正確に。</div></div><button id="reset" title="初期状態に戻す">初期化</button></header><section id="gtInstallPanel" class="gt-install-panel" aria-label="アプリのインストール案内" hidden>
  <div class="gt-install-inner"><div><div class="gt-install-title">📲 ホーム画面にアプリを追加</div><div class="gt-install-caption">GT COLOR LAB PROをワンタップで起動</div></div><button type="button" id="gtInstallButton" class="gt-install-button">インストールする</button></div>
  <div id="gtInstallHelp" class="gt-install-help" hidden role="status"></div>
-</section><div class="gt-mode-switch" role="tablist" aria-label="モード切替"><button type="button" id="gtModeCalc" class="active" aria-selected="true"><span class="gt-mode-title">COLOR LAB</span><span class="gt-mode-desc">配合計算</span></button><button type="button" id="gtModeRecipe" aria-selected="false"><span class="gt-mode-title">PHOTO RECIPE</span><span class="gt-mode-desc">写真付きレシピ</span></button><button type="button" id="gtModeDesign" aria-selected="false"><span class="gt-mode-title">COLOR DESIGN</span><span class="gt-mode-desc">ルフレ配合提案</span></button><button type="button" id="gtModeEasy" aria-selected="false"><span class="gt-mode-title">かんたん計算</span><span class="gt-mode-desc">薬剤選定なし</span></button></div>
+</section><div class="gt-mode-switch" role="tablist" aria-label="モード切替"><button type="button" id="gtModeCalc" class="active" aria-selected="true"><span class="gt-mode-title">COLOR LAB</span><span class="gt-mode-desc">配合計算</span></button><button type="button" id="gtModeRecipe" aria-selected="false"><span class="gt-mode-title">PHOTO RECIPE</span><span class="gt-mode-desc">写真付きレシピ</span></button><button type="button" id="gtModeDesign" aria-selected="false"><span class="gt-mode-title">COLOR DESIGN</span><span class="gt-mode-desc">ルフレ配合提案</span></button><button type="button" id="gtModeEasy" aria-selected="false"><span class="gt-mode-title">かんたん計算</span><span class="gt-mode-desc">薬剤選定なし</span></button><button type="button" id="gtModeAI" aria-selected="false"><span class="gt-mode-title">AI COLOR</span><span class="gt-mode-desc">無料の配合提案体験</span></button></div>
+<section class="panel gt-hidden-mode" id="gtAISection" hidden>
+<h2>✨ GT AI COLOR ADVISOR</h2><p class="hint">無料・オフラインのルールベースシミュレーション。外部AIやAPI料金は不要です。</p>
+<div class="ai-field"><label>STEP 1｜現在の明度</label><div id="aiBases" class="ai-grid"></div></div>
+<div class="ai-field"><label>STEP 2｜残留色素</label><div id="aiResidues" class="ai-grid"></div></div>
+<div class="ai-field"><label>STEP 3｜希望色</label><select id="aiGoal"></select></div>
+<div class="ai-field"><label>STEP 4｜仕上がり</label><div id="aiFinishes" class="ai-grid"></div></div>
+<div class="ai-field"><label>希望明度</label><input id="aiLevel" type="range" min="6" max="14" value="10"><div id="aiLevelText" class="ai-muted">10 Lv</div></div>
+<div class="ai-field"><label>必要な1剤量（g以上）</label><input id="aiGrams" type="number" min="10" max="500" step="1" value="100" inputmode="numeric"></div>
+<button type="button" class="ai-action" id="aiGenerate">✨ 配合案をシミュレーション</button>
+<div id="aiOutput" class="ai-result" aria-live="polite"><p class="ai-muted">条件を選んで「配合案をシミュレーション」を押してください。</p></div>
+<div id="aiHistory" class="ai-result"><h3>📒 端末内の配合履歴</h3><p class="ai-muted">保存した配合と施術結果をこの端末だけに記録します。スタッフ間での自動共有はありません。</p><div id="aiHistoryList"></div><button type="button" id="aiClearHistory" class="ai-action" style="background:#697587;margin-top:12px">履歴をすべて削除</button></div>
+</section>
 <section class="panel gt-hidden-mode" id="gtEasySection" hidden>
 <h2>🧮 かんたん配合計算</h2><p class="hint">薬剤選定なし。比率と必要量を入れるだけ。1g単位で量れるよう、合計量を自動調整します。</p>
 <div class="gt-easy-target"><label for="gtEasyTotal">必要な1剤の量（これ以上作る）</label><div class="gt-easy-line"><input id="gtEasyTotal" type="number" min="1" max="10000" step="1" value="100" inputmode="numeric"><strong>g</strong></div><div class="pills" id="gtEasyPresets"></div></div>
@@ -490,6 +517,12 @@ const choices=[...a.options].map(o=>o.value);
 function choose(sel,candidates,fallback){const v=candidates.find(x=>choices.includes(x))||choices[fallback]||choices[0];if(v)sel.value=v}
 choose(a,['9-CN','9-AT','7-BR'],0);choose(b,['9-SA','9-PD','7-AT'],1);
 let memo='';
+const HISTORY_KEY='gt_ai_color_history_v1';
+const loadHistory=()=>{try{const x=JSON.parse(localStorage.getItem(HISTORY_KEY)||'[]');return Array.isArray(x)?x.slice(0,50):[]}catch{return []}};
+const saveHistory=x=>{try{localStorage.setItem(HISTORY_KEY,JSON.stringify(x.slice(0,50)));return true}catch{return false}};
+const renderHistory=()=>{const h=loadHistory();const host=$('aiHistoryList');host.innerHTML='';if(!h.length){host.textContent='保存した配合はまだありません。';return}h.forEach((r,i)=>{const wrap=document.createElement('div');wrap.className='ai-result';const head=document.createElement('strong');head.textContent=`${r.date}｜${r.goal} ${r.level}Lv`;wrap.append(head);const pre=document.createElement('pre');pre.style.cssText='white-space:pre-wrap;overflow-wrap:anywhere;font:inherit;font-size:12px';pre.textContent=r.memo;wrap.append(pre);const lab=document.createElement('label');lab.textContent='施術後の評価・メモ（任意）';lab.style.display='block';wrap.append(lab);const note=document.createElement('textarea');note.rows=2;note.style.cssText='width:100%;box-sizing:border-box;border:1px solid #d6cce0;border-radius:9px;padding:8px';note.placeholder='例：黄みが残った、次回は補色を少し増やす';note.value=r.note||'';wrap.append(note);const btn=document.createElement('button');btn.type='button';btn.className='ai-action';btn.textContent='評価メモを保存';btn.onclick=()=>{const next=loadHistory();if(next[i]){next[i].note=note.value.slice(0,1000);saveHistory(next);btn.textContent='保存しました'}};wrap.append(btn);host.append(wrap)})};
+$('aiClearHistory').onclick=()=>{if(confirm('この端末に保存した配合履歴をすべて削除しますか？')){try{localStorage.removeItem(HISTORY_KEY)}catch{}renderHistory()}};
+renderHistory();
 function render(){
 const total=Number($('designGrams').value),p=Number(pct.value),mult=Number(ox.value);
 if(!Number.isFinite(total)||total<10||total>500||!Number.isFinite(p)||p<0||p>50||a.value===b.value){out.textContent='薬剤は異なる2種類を選び、1剤10〜500g、調整割合0〜50%で入力してください。';memo='';return}
@@ -509,6 +542,12 @@ const recipes=[{"id":1,"title":"温かみのあるカジュアルなウォーム
 const pick=document.getElementById('gtExampleRecipe'),out=document.getElementById('gtExampleOutput'),grams=document.getElementById('designGrams'),copy=document.getElementById('gtExampleCopy');
 if(!pick||!out||!grams)return;
 let memo='';
+const HISTORY_KEY='gt_ai_color_history_v1';
+const loadHistory=()=>{try{const x=JSON.parse(localStorage.getItem(HISTORY_KEY)||'[]');return Array.isArray(x)?x.slice(0,50):[]}catch{return []}};
+const saveHistory=x=>{try{localStorage.setItem(HISTORY_KEY,JSON.stringify(x.slice(0,50)));return true}catch{return false}};
+const renderHistory=()=>{const h=loadHistory();const host=$('aiHistoryList');host.innerHTML='';if(!h.length){host.textContent='保存した配合はまだありません。';return}h.forEach((r,i)=>{const wrap=document.createElement('div');wrap.className='ai-result';const head=document.createElement('strong');head.textContent=`${r.date}｜${r.goal} ${r.level}Lv`;wrap.append(head);const pre=document.createElement('pre');pre.style.cssText='white-space:pre-wrap;overflow-wrap:anywhere;font:inherit;font-size:12px';pre.textContent=r.memo;wrap.append(pre);const lab=document.createElement('label');lab.textContent='施術後の評価・メモ（任意）';lab.style.display='block';wrap.append(lab);const note=document.createElement('textarea');note.rows=2;note.style.cssText='width:100%;box-sizing:border-box;border:1px solid #d6cce0;border-radius:9px;padding:8px';note.placeholder='例：黄みが残った、次回は補色を少し増やす';note.value=r.note||'';wrap.append(note);const btn=document.createElement('button');btn.type='button';btn.className='ai-action';btn.textContent='評価メモを保存';btn.onclick=()=>{const next=loadHistory();if(next[i]){next[i].note=note.value.slice(0,1000);saveHistory(next);btn.textContent='保存しました'}};wrap.append(btn);host.append(wrap)})};
+$('aiClearHistory').onclick=()=>{if(confirm('この端末に保存した配合履歴をすべて削除しますか？')){try{localStorage.removeItem(HISTORY_KEY)}catch{}renderHistory()}};
+renderHistory();
 function render(){
  const value=pick.value; if(!value){out.textContent='レシピを選択してください。';memo='';return;}
  const [id,index]=value.split('-').map(Number),r=recipes.find(x=>x.id===id),g=r?.parsedGroups?.[index];
@@ -693,4 +732,56 @@ renderRows();
   update();
 })();
 </script>
-</body></html>
+<script>
+(function(){'use strict';
+const $=id=>document.getElementById(id), state={base:16,res:'yelloworange',finish:'clear'};
+const palettes={
+ ash:['アッシュ','9-AT','9-CN'],greige:['グレージュ','9-AT','9-BR'],silver:['シルバー','9-AT','9-IR'],blue:['ブルーアッシュ','9-AT','7-CT'],lavenderash:['ラベンダーアッシュ','9-AT','9-IR'],
+ milk:['ミルクティーベージュ','9-CN','9-FO'],sand:['サンドベージュ','9-SA','9-CN'],greigebeige:['グレージュベージュ','9-CN','9-AT'],brown:['ナチュラルブラウン','9-BR','9-CN'],chocolate:['ショコラブラウン','7-BR','9-BR'],
+ pink:['ピンクベージュ','9-PE','9-CN'],pinkbrown:['ピンクブラウン','9-PE','9-BR'],lavender:['ラベンダー','9-IR','9-PE'],rose:['ローズピンク','9-PE','9-GA'],red:['レッドブラウン','9-GA','9-PE'],
+ olive:['オリーブグレージュ','9-ME','9-CN'],matte:['マットアッシュ','9-ME','9-AT'],khaki:['カーキベージュ','9-ME','9-SA'],copper:['カッパー','9-SC','9-CN'],orange:['オレンジベージュ','9-SC','9-FO']};
+const correction={orange:['7-CT','オレンジの補正には青方向を検討'],yelloworange:['9-IR','黄オレンジの補正には青紫方向を検討'],yellow:['9-IR','黄色の補正には紫方向を検討'],paleyellow:['9-IR','薄黄色の補正は少量から検討'],redorange:['9-ME','赤オレンジの補正は緑・青方向を慎重に検討']};
+const makeChoices=(host,key,items)=>{items.forEach(([v,label])=>{const b=document.createElement('button');b.type='button';b.className='ai-choice';b.textContent=label;b.dataset.val=v;b.onclick=()=>{state[key]=v;refresh()};$(host).append(b)})};
+makeChoices('aiBases','base',[[14,'14 Lv'],[15,'15 Lv'],[16,'16 Lv'],[17,'17 Lv'],[18,'18 Lv'],[19,'19 Lv']]);
+makeChoices('aiResidues','res',[['orange','オレンジ'],['yelloworange','黄オレンジ'],['yellow','黄色'],['paleyellow','薄い黄色'],['redorange','赤オレンジ']]);
+makeChoices('aiFinishes','finish',[['clear','透明感重視'],['vivid','色味重視'],['natural','ナチュラル']]);
+for(const [key,arr] of Object.entries(palettes)){const o=document.createElement('option');o.value=key;o.textContent=arr[0];$('aiGoal').append(o)}$('aiGoal').value='milk';
+function refresh(){for(const [host,key] of [['aiBases','base'],['aiResidues','res'],['aiFinishes','finish']])$(host).querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(String(state[key])===b.dataset.val)));$('aiLevelText').textContent=$('aiLevel').value+' Lv'}
+$('aiLevel').oninput=refresh;refresh();
+const esc=t=>String(t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let memo='';
+const HISTORY_KEY='gt_ai_color_history_v1';
+const loadHistory=()=>{try{const x=JSON.parse(localStorage.getItem(HISTORY_KEY)||'[]');return Array.isArray(x)?x.slice(0,50):[]}catch{return []}};
+const saveHistory=x=>{try{localStorage.setItem(HISTORY_KEY,JSON.stringify(x.slice(0,50)));return true}catch{return false}};
+const renderHistory=()=>{const h=loadHistory();const host=$('aiHistoryList');host.innerHTML='';if(!h.length){host.textContent='保存した配合はまだありません。';return}h.forEach((r,i)=>{const wrap=document.createElement('div');wrap.className='ai-result';const head=document.createElement('strong');head.textContent=`${r.date}｜${r.goal} ${r.level}Lv`;wrap.append(head);const pre=document.createElement('pre');pre.style.cssText='white-space:pre-wrap;overflow-wrap:anywhere;font:inherit;font-size:12px';pre.textContent=r.memo;wrap.append(pre);const lab=document.createElement('label');lab.textContent='施術後の評価・メモ（任意）';lab.style.display='block';wrap.append(lab);const note=document.createElement('textarea');note.rows=2;note.style.cssText='width:100%;box-sizing:border-box;border:1px solid #d6cce0;border-radius:9px;padding:8px';note.placeholder='例：黄みが残った、次回は補色を少し増やす';note.value=r.note||'';wrap.append(note);const btn=document.createElement('button');btn.type='button';btn.className='ai-action';btn.textContent='評価メモを保存';btn.onclick=()=>{const next=loadHistory();if(next[i]){next[i].note=note.value.slice(0,1000);saveHistory(next);btn.textContent='保存しました'}};wrap.append(btn);host.append(wrap)})};
+$('aiClearHistory').onclick=()=>{if(confirm('この端末に保存した配合履歴をすべて削除しますか？')){try{localStorage.removeItem(HISTORY_KEY)}catch{}renderHistory()}};
+renderHistory();
+$('aiGenerate').onclick=()=>{
+const goal=$('aiGoal').value,selected=palettes[goal],lev=Number($('aiLevel').value),requested=Number($('aiGrams').value);
+if(!Number.isFinite(requested)||requested<10||requested>500){$('aiOutput').textContent='1剤量は10〜500gで指定してください。';return}
+const warm=['pink','pinkbrown','rose','red','copper','orange'].includes(goal),adj=correction[state.res];
+let correctionPct=warm?(state.finish==='vivid'?0:3):(state.finish==='clear'?8:state.finish==='vivid'?5:4);
+if(state.base>=18)correctionPct=Math.min(correctionPct,4);
+const clearPct=state.base>=18&&lev>=11?(state.finish==='clear'?20:10):0;
+const secondaryPct=state.finish==='vivid'?38:state.finish==='natural'?25:30;
+const entries=[[selected[1],100-secondaryPct-correctionPct-clearPct],[selected[2],secondaryPct]];
+if(correctionPct)entries.push([adj[0],correctionPct]);if(clearPct)entries.push(['クリア',clearPct]);
+const map=new Map();for(const [name,pct] of entries)map.set(name,(map.get(name)||0)+pct);
+const rows=[...map].filter(x=>x[1]>0),weights=rows.map(x=>x[1]);
+// Exact integer grams if reasonably possible, otherwise closest integer allocation, never below requested.
+let result=null; if(typeof window.gtRoundFormula==='function')result=window.gtRoundFormula(weights,requested);
+if(!result||!Array.isArray(result.values)){const total=Math.ceil(requested),raw=weights.map(x=>x*total/100),values=raw.map(Math.floor);let missing=total-values.reduce((a,b)=>a+b,0);const order=raw.map((v,i)=>({i,rem:v-Math.floor(v)})).sort((a,b)=>b.rem-a.rem);for(let j=0;j<missing;j++)values[order[j%order.length].i]++;result={total,values,exact:false}}
+const tone={clear:'透明感重視',vivid:'色味重視',natural:'ナチュラル'}[state.finish];
+const why=[`希望色「${selected[0]}」に対応する仮の主剤・調整剤を選択`,`残留色素：${adj[1]}`,`仕上がり：${tone}に応じて配分を調整`,result.exact?'整数gで比率を維持':'整数gで近似配分'];
+const line=rows.map(([code,pct],i)=>`<div class="ai-row"><span>${esc(code)} <small>${pct}%</small></span><strong>${result.values[i]} g</strong></div>`).join('');
+$('aiOutput').innerHTML=`<h3>✨ AI風カラー提案（概算）</h3><div class="ai-muted">${esc(selected[0])} ${lev}Lv ／ ベース${state.base}Lv ／ ${esc(tone)}</div>${line}<div class="ai-row"><b>1剤合計</b><strong>${result.total} g</strong></div><h3 style="margin-top:17px">選定理由</h3><p class="ai-muted">${why.map(esc).join('<br>')}</p><p class="ai-muted">※実際のN.ルフレ色番・発色特性の検証済みデータによるAI予測ではありません。配合はルールから作った未検証の概算案です。OX濃度・倍率・放置時間は製品指示で確認し、毛束テストを行ってください。</p><button type="button" id="aiCopy" class="ai-action">配合メモをコピー</button><button type="button" id="aiSave" class="ai-action" style="margin-top:10px;background:#607cae">この配合を履歴に保存</button>`;
+memo=`GT AI COLOR ADVISOR（無料ルールベース体験版）\n${selected[0]} ${lev}Lv / ベース${state.base}Lv / ${tone}\n`+rows.map(([code,pct],i)=>`${code} ${pct}%：${result.values[i]}g`).join('\n')+`\n1剤合計 ${result.total}g\n${why.join('\n')}\n※未検証の概算案。毛束テスト必須。`;
+$('aiCopy').onclick=()=>{if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(memo).catch(()=>prompt('コピー用',memo));else prompt('コピー用',memo)};
+$('aiSave').onclick=()=>{const h=loadHistory();h.unshift({date:new Date().toLocaleString('ja-JP'),goal:selected[0],level:lev,memo,note:''});if(saveHistory(h)){$('aiSave').textContent='保存しました';renderHistory()}else alert('保存できませんでした。端末の保存設定をご確認ください。')};
+};
+// Integrate with existing mode controller without changing its logic.
+const modeBtn=$('gtModeAI'),section=$('gtAISection');
+modeBtn.onclick=()=>{for(const id of ['gtModeCalc','gtModeRecipe','gtModeDesign','gtModeEasy'])$(id)?.classList.remove('active');for(const b of document.querySelectorAll('.gt-mode-switch button')){b.classList.toggle('active',b===modeBtn);b.setAttribute('aria-selected',String(b===modeBtn))}for(const el of document.querySelectorAll('main > section.panel')){if(el!==section){el.hidden=true;el.classList.add('gt-hidden-mode')}}section.hidden=false;section.classList.remove('gt-hidden-mode')};
+for(const id of ['gtModeCalc','gtModeRecipe','gtModeDesign','gtModeEasy'])$(id)?.addEventListener('click',()=>{section.hidden=true;section.classList.add('gt-hidden-mode');modeBtn.classList.remove('active');modeBtn.setAttribute('aria-selected','false')});
+})();
+</script></body></html>
