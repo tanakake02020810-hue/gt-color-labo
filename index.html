@@ -164,7 +164,30 @@ window.gtRoundFormula=function(pcts,target){
 #gtMiscSection{background:transparent;border:0;box-shadow:none;padding:0}
 #gtMiscSection>h2{margin:12px 0}#gtMiscSection>section.panel{margin:18px 0}
 #gtMiscSection[hidden]{display:none!important}
-</style></head><body><main><header class="top"><div><div class="eyebrow">HAIRHOUSE GT · PROFESSIONAL TOOL</div><h1>COLOR LAB <span>PRO</span></h1><div class="sub">カラー剤の配合を、すばやく正確に。</div></div><button id="reset" title="初期状態に戻す">初期化</button></header><section aria-label="アプリのインストール案内" class="gt-install-panel" hidden="" id="gtInstallPanel">
+</style>
+<style id="gt-my-recipe-card-layout-20261101">
+/* MY RECIPE: prevent horizontal squeeze and keep controls below content. */
+#recipes{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:16px;align-items:start}
+#recipes>.rowitem{display:flex!important;flex-direction:column!important;align-items:stretch!important;justify-content:flex-start!important;gap:14px!important;min-width:0;width:100%;padding:18px!important;margin:0!important;background:#fff;border:1px solid #e9e5f0!important;border-radius:20px;box-shadow:0 7px 22px #ac9db01c}
+#recipes>.rowitem .info{width:100%;min-width:0;overflow-wrap:anywhere}
+#recipes>.rowitem .info>strong{display:block;color:#30364c;font-size:19px;line-height:1.45;margin-bottom:6px;overflow-wrap:anywhere}
+#recipes>.rowitem .info>small{display:block;font-size:12px;line-height:1.6;color:#81869a;margin-top:8px}
+#recipes .gt-saved-photos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:12px 0 4px;width:100%}
+#recipes .gt-saved-photos figure{min-width:0;margin:0}
+#recipes .gt-saved-photos img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;border-radius:13px;background:#f3f2f7}
+#recipes .gt-saved-photos figcaption{margin-top:5px;color:#737b92;font-size:12px}
+#recipes .gt-memo-edit{width:100%!important;min-width:0;margin:0!important;padding:13px;background:#f8f9ff;border:1px solid #e9eaf4;border-radius:15px}
+#recipes .gt-memo-edit label{font-size:14px;color:#4b526a;margin-bottom:8px!important}
+#recipes .gt-memo-edit textarea{display:block;width:100%!important;min-width:0;resize:vertical;min-height:95px;line-height:1.6;font-size:15px;padding:11px!important}
+#recipes .gt-memo-edit button{display:block;margin:10px 0 0 auto!important;padding:10px 16px;font-size:13px;min-height:42px;background:#fff}
+#recipes>.rowitem>.buttons{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));width:100%;gap:8px;flex-shrink:1;min-width:0}
+#recipes>.rowitem>.buttons button{min-width:0;width:100%;min-height:46px;padding:10px 4px!important;font-size:13px!important;white-space:nowrap}
+#recipes>.rowitem>.buttons button[data-loadrecipe]{background:linear-gradient(110deg,#c9e8ff,#bcefe9);color:#263d54;border:1px solid #c4e9ee}
+#recipes>.rowitem>.buttons button[data-share-recipe]{background:linear-gradient(110deg,#ffe5f1,#f6e2ff);color:#67466c;border:1px solid #f2d6ea}
+#recipes>.rowitem>.buttons button.danger{color:#bf6073;background:#fff;border:1px solid #e9cbd2}
+@media(max-width:600px){#recipes{grid-template-columns:minmax(0,1fr);gap:13px}#recipes>.rowitem{padding:15px!important}}
+</style>
+</head><body><main><header class="top"><div><div class="eyebrow">HAIRHOUSE GT · PROFESSIONAL TOOL</div><h1>COLOR LAB <span>PRO</span></h1><div class="sub">カラー剤の配合を、すばやく正確に。</div></div><button id="reset" title="初期状態に戻す">初期化</button></header><section aria-label="アプリのインストール案内" class="gt-install-panel" hidden="" id="gtInstallPanel">
 <div class="gt-install-inner"><div><div class="gt-install-title">📲 ホーム画面にアプリを追加</div><div class="gt-install-caption">GT COLOR LAB PROをワンタップで起動</div></div><button class="gt-install-button" id="gtInstallButton" type="button">インストールする</button></div>
 <div class="gt-install-help" hidden="" id="gtInstallHelp" role="status"></div>
 </section><div aria-label="モード切替" class="gt-mode-switch" role="tablist"><button aria-selected="true" class="active" id="gtModeCalc" type="button"><span class="gt-mode-title">COLOR LAB</span><span class="gt-mode-desc">配合計算</span></button><button aria-selected="false" id="gtModeEasy" type="button"><span class="gt-mode-title">かんたん計算</span><span class="gt-mode-desc">薬剤選定なし</span></button><button aria-selected="false" id="gtModeMisc" type="button"><span class="gt-mode-title">その他</span><span class="gt-mode-desc">便利機能・カラー資料</span></button><button aria-selected="false" id="gtModeRecipe" type="button"><span class="gt-mode-title">PHOTO RECIPE</span><span class="gt-mode-desc">写真付きレシピ</span></button><button aria-selected="false" id="gtModeDesign" type="button"><span class="gt-mode-title">COLOR DESIGN</span><span class="gt-mode-desc">ルフレ配合提案</span></button><button aria-selected="false" id="gtModeMyRecipe" type="button"><span class="gt-mode-title">MY RECIPE</span><span class="gt-mode-desc">保存レシピ一覧</span></button></div>
