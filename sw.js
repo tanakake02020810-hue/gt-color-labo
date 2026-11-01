@@ -1,4 +1,4 @@
-const CACHE_NAME = 'gt-color-lab-pro-pwa-camera-20261101-myrecipe';
+const CACHE_NAME = 'gt-color-lab-20261101-recipe-fix';
 const FILES = ['./index.html', './manifest.webmanifest', './recipes.json', './icon-192.png', './icon-512.png'];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(FILES)).then(() => self.skipWaiting()));

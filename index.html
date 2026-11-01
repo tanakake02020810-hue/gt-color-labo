@@ -144,10 +144,15 @@ window.gtRoundFormula=function(pcts,target){
 #gtAISection .ai-row strong{white-space:nowrap}#gtAISection .ai-muted{color:#626a7c;font-size:13px;line-height:1.7}
 #gtAISection input,#gtAISection select{width:100%;max-width:100%;box-sizing:border-box}
 #gtAISection .ai-action{width:100%;background:linear-gradient(110deg,#ce79c9,#7d9ce7);color:white;border:0;border-radius:15px;min-height:50px;font-weight:800}
+
+/* 2026-11-01: MY RECIPE should look tappable from launch. */
+#gtModeMyRecipe{background:linear-gradient(135deg,#d4f7e9,#aeeedb)!important;color:#254a48!important;border:2px solid #fff!important;opacity:1!important;filter:none!important;cursor:pointer!important}
+#gtModeMyRecipe .gt-mode-desc{opacity:.85!important}
+#gtModeMyRecipe.active{outline:3px solid #69cdb2!important;box-shadow:0 9px 23px #77cbbd55!important}
 </style></head><body><main><header class="top"><div><div class="eyebrow">HAIRHOUSE GT · PROFESSIONAL TOOL</div><h1>COLOR LAB <span>PRO</span></h1><div class="sub">カラー剤の配合を、すばやく正確に。</div></div><button id="reset" title="初期状態に戻す">初期化</button></header><section id="gtInstallPanel" class="gt-install-panel" aria-label="アプリのインストール案内" hidden>
  <div class="gt-install-inner"><div><div class="gt-install-title">📲 ホーム画面にアプリを追加</div><div class="gt-install-caption">GT COLOR LAB PROをワンタップで起動</div></div><button type="button" id="gtInstallButton" class="gt-install-button">インストールする</button></div>
  <div id="gtInstallHelp" class="gt-install-help" hidden role="status"></div>
-</section><div class="gt-mode-switch" role="tablist" aria-label="モード切替"><button type="button" id="gtModeCalc" class="active" aria-selected="true"><span class="gt-mode-title">COLOR LAB</span><span class="gt-mode-desc">配合計算</span></button><button type="button" id="gtModeRecipe" aria-selected="false"><span class="gt-mode-title">PHOTO RECIPE</span><span class="gt-mode-desc">写真付きレシピ</span></button><button type="button" id="gtModeDesign" aria-selected="false"><span class="gt-mode-title">COLOR DESIGN</span><span class="gt-mode-desc">ルフレ配合提案</span></button><button type="button" id="gtModeEasy" aria-selected="false"><span class="gt-mode-title">かんたん計算</span><span class="gt-mode-desc">薬剤選定なし</span></button><button type="button" id="gtModeAI" aria-selected="false"><span class="gt-mode-title">AI COLOR</span><span class="gt-mode-desc">無料の配合提案体験</span></button><button type="button" id="gtModeMyRecipe" aria-selected="false"><span class="gt-mode-title">MY RECIPE</span><span class="gt-mode-desc">保存レシピ一覧</span></button></div>
+</section><div class="gt-mode-switch" role="tablist" aria-label="モード切替"><button type="button" id="gtModeCalc" class="active" aria-selected="true"><span class="gt-mode-title">COLOR LAB</span><span class="gt-mode-desc">配合計算</span></button><button type="button" id="gtModeEasy" aria-selected="false"><span class="gt-mode-title">かんたん計算</span><span class="gt-mode-desc">薬剤選定なし</span></button><button type="button" id="gtModeAI" aria-selected="false"><span class="gt-mode-title">AI COLOR</span><span class="gt-mode-desc">無料の配合提案体験</span></button><button type="button" id="gtModeRecipe" aria-selected="false"><span class="gt-mode-title">PHOTO RECIPE</span><span class="gt-mode-desc">写真付きレシピ</span></button><button type="button" id="gtModeDesign" aria-selected="false"><span class="gt-mode-title">COLOR DESIGN</span><span class="gt-mode-desc">ルフレ配合提案</span></button><button type="button" id="gtModeMyRecipe" aria-selected="false"><span class="gt-mode-title">MY RECIPE</span><span class="gt-mode-desc">保存レシピ一覧</span></button></div>
 <section class="panel gt-hidden-mode" id="gtAISection" hidden>
 <h2>✨ GT AI COLOR ADVISOR</h2><p class="hint">無料・オフラインのルールベースシミュレーション。外部AIやAPI料金は不要です。</p>
 <div class="ai-field"><label>STEP 1｜現在の明度</label><div id="aiBases" class="ai-grid"></div></div>
@@ -354,7 +359,7 @@ $('saveRecipe').onclick=async()=>{
  $('recipeName').value='';gtPhotoState.before=null;gtPhotoState.after=null;gtPhotoPreview('before');gtPhotoPreview('after');renderSaved();alert('レシピと写真を保存しました');
 };
 $('record').onclick=()=>{if(calc().error){alert('配合エラーを修正してください');return}state.history.unshift({date:timestamp(),data:snapshot()});state.history=state.history.slice(0,100);renderSaved();persist()};
-$('recipes').onclick=e=>{let b=e.target.closest('button');if(!b)return;if(b.dataset.loadrecipe!==undefined)loadSnapshot(state.recipes[Number(b.dataset.loadrecipe)].data);else if(b.dataset.delrecipe!==undefined&&confirm('このレシピを削除しますか？')){state.recipes.splice(Number(b.dataset.delrecipe),1);renderSaved();persist()}};
+$('recipes').onclick=e=>{let b=e.target.closest('button');if(!b)return;if(b.dataset.loadrecipe!==undefined){const item=state.recipes[Number(b.dataset.loadrecipe)];if(!item||!item.data||!Array.isArray(item.data.drugs))return;window.gtSwitchMode?.('calc');loadSnapshot(item.data);saveZone();zoneButtons();update();}else if(b.dataset.delrecipe!==undefined&&confirm('このレシピを削除しますか？')){state.recipes.splice(Number(b.dataset.delrecipe),1);renderSaved();persist()}};
 $('history').onclick=e=>{let b=e.target.closest('button');if(!b)return;if(b.dataset.loadhistory!==undefined)loadSnapshot(state.history[Number(b.dataset.loadhistory)].data);else if(b.dataset.delhistory!==undefined&&confirm('この履歴を削除しますか？')){state.history.splice(Number(b.dataset.delhistory),1);renderSaved();persist()}};
 $('copy').onclick=async()=>{const s=summary();try{await navigator.clipboard.writeText(s);alert('コピーしました')}catch(e){const ta=document.createElement('textarea');ta.value=s;document.body.append(ta);ta.select();const ok=document.execCommand('copy');ta.remove();alert(ok?'コピーしました':'コピーできませんでした。HTTPS環境でお試しください。')}};
 $('print').onclick=()=>window.print();$('reset').onclick=()=>{if(confirm('入力内容を初期化しますか？（保存済みレシピと履歴は残ります）')){state={...state,total:100,drugs:defaultDrugs(),oxyEnabled:true,oxyRatio:'1',oxyCustom:1,extra:30};restoreInputs()}};
@@ -452,7 +457,7 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
 (()=>{
 const calc=document.getElementById('gtModeCalc'),recipe=document.getElementById('gtModeRecipe'),design=document.getElementById('gtModeDesign'),section=document.getElementById('recipeSection'),designSection=document.getElementById('designSection');
 const easySection=document.getElementById('gtEasySection'),easy=document.getElementById('gtModeEasy');const others=[...document.querySelectorAll('main > section')].filter(x=>x!==section&&x!==designSection&&x!==easySection);
-window.gtSwitchMode=function(which){const isRecipe=which==='recipe',isDesign=which==='design',isEasy=which==='easy';easySection.hidden=!isEasy;easySection.classList.toggle('gt-hidden-mode',!isEasy);section.hidden=!isRecipe;section.classList.toggle('gt-hidden-mode',!isRecipe);designSection.hidden=!isDesign;designSection.classList.toggle('gt-hidden-mode',!isDesign);others.forEach(el=>el.classList.toggle('gt-hidden-mode',isRecipe||isDesign||isEasy));[[calc,'calc'],[recipe,'recipe'],[design,'design'],[easy,'easy']].forEach(([b,v])=>{b.classList.toggle('active',which===v);b.setAttribute('aria-selected',String(which===v))});window.scrollTo({top:0,behavior:'smooth'})};
+window.gtSwitchMode=function(which){const myRecipePanel=document.getElementById('gtMyRecipeSection');if(myRecipePanel){myRecipePanel.hidden=true;myRecipePanel.classList.add('gt-hidden-mode')}const isRecipe=which==='recipe',isDesign=which==='design',isEasy=which==='easy';easySection.hidden=!isEasy;easySection.classList.toggle('gt-hidden-mode',!isEasy);section.hidden=!isRecipe;section.classList.toggle('gt-hidden-mode',!isRecipe);designSection.hidden=!isDesign;designSection.classList.toggle('gt-hidden-mode',!isDesign);others.forEach(el=>el.classList.toggle('gt-hidden-mode',isRecipe||isDesign||isEasy));[[calc,'calc'],[recipe,'recipe'],[design,'design'],[easy,'easy']].forEach(([b,v])=>{b.classList.toggle('active',which===v);b.setAttribute('aria-selected',String(which===v))});window.scrollTo({top:0,behavior:'smooth'})};
 calc.onclick=()=>window.gtSwitchMode('calc');recipe.onclick=()=>window.gtSwitchMode('recipe');design.onclick=()=>window.gtSwitchMode('design');easy.onclick=()=>window.gtSwitchMode('easy');window.gtSwitchMode('calc');
 // Parses only unambiguous source expressions; never guesses missing percentages.
 window.gtParseRecipe=function(raw){
@@ -833,11 +838,7 @@ for(const id of ['gtModeCalc','gtModeRecipe','gtModeDesign','gtModeEasy'])$(id)?
  });
  // Existing recipe recall buttons are delegated in the original application.
  // Switch to the calculator only after a recipe was actually recalled.
- list.addEventListener('click',e=>{
-   const btn=e.target.closest('[data-loadrecipe]');
-   if(!btn)return;
-   setTimeout(()=>document.getElementById('gtModeCalc')?.click(),0);
- });
+ // Recipe recall now switches mode synchronously in the main click handler.
  const obs=new MutationObserver(()=>{if(!panel.hidden)counter.textContent=list.querySelectorAll('[data-loadrecipe]').length+' 件保存'});
  obs.observe(list,{childList:true});
 })();
