@@ -253,8 +253,8 @@ window.gtRoundFormula=function(pcts,target){
 <div aria-modal="true" class="hide" id="weighOverlay" role="dialog"><div class="flex between"><h2>GT COLOR LAB · 計量モード</h2><button id="closeWeigh">閉じる ×</button></div><div id="weighContent"></div></div><footer>GT COLOR LAB PRO · 2026.11.02 共有修正版</footer><section class="panel" hidden="" id="recipeSection"><div class="recipe-head"><h2 style="margin:0">📸 N.ルフレ PHOTO RECIPE</h2><span class="recipe-count" id="recipeCount">読み込み中…</span></div><p class="muted">ナプラ公式Instagram掲載の配合例。写真を選ぶと施術前・根元・中間・毛先などの詳細を表示します。</p><div class="recipe-search"><input aria-label="レシピ検索" id="photoRecipeSearch" placeholder="カラー名・薬剤名・レベルで検索" type="search"/></div><div class="recipe-cards" id="recipeCards"></div><p class="recipe-notice">※掲載データは提供されたInstagram保存HTMLに記載された内容を転記しています。写真とレシピの対応は公開前に目視確認してください。レシピの部位区分は原文のまま表示し、未記載の項目は補完していません。</p></section><dialog class="recipe-dialog" id="recipeDialog"><div class="recipe-detail" id="recipeDetail"></div></dialog><section class="panel gt-hidden-mode" hidden="" id="gtMyRecipeSection">
 <div class="recipe-head"><h2 style="margin:0">📒 MY RECIPE</h2><span class="recipe-count" id="gtMyRecipeCount"></span></div>
 <p class="hint">保存したレシピと施術前・施術後の写真をまとめて確認できます。「呼出」でCOLOR LABに戻して編集できます。</p>
-<details class="gt-collapsible"><summary>📥 共有レシピを取り込む <span>開く</span></summary><div class="gt-collapsible-body"><div class="actions"><button type="button" id="gtImportSharedRecipe" class="primary">📥 レシピファイルを選ぶ</button><input id="gtSharedRecipeFile" type="file" accept=".json,application/json" hidden></div><p class="hint">LINEなどで受け取ったGTレシピファイルを選んで追加します。保存済みレシピは上書きしません。</p></div></details>
-<details class="gt-collapsible"><summary>📲 共有・機種変更 <span>開く</span></summary><div class="gt-collapsible-body"><div class="gt-transfer-tools" aria-label="共有とデータ移行"><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:9px"><button type="button" id="gtFullExport" class="primary">📦 全データをバックアップ</button><button type="button" id="gtBackupShare">📤 バックアップを共有</button><button type="button" id="gtFullImport">📥 新しい端末で復元</button></div><p id="gtBackupStatus" role="status" class="hint" style="display:none;overflow-wrap:anywhere"></p><input type="file" id="gtFullImportFile" accept=".json,application/json" hidden><p class="hint">写真・メモ・部位別配合・追加カラーなどを保存します。復元は現在の端末データを置き換えます。</p></div></div></details>
+
+<details class="gt-collapsible"><summary>📲 共有・機種変更 <span>開く</span></summary><div class="gt-collapsible-body"><div class="gt-transfer-tools" aria-label="共有とデータ移行"><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:9px"><button type="button" id="gtFullExport" class="primary">📦 全データをバックアップ</button><button type="button" id="gtBackupShare">📤 バックアップを共有</button><button type="button" id="gtFullImport">📥 新しい端末で復元</button><button type="button" id="gtImportSharedRecipe">📥 共有レシピを取り込む</button><input id="gtSharedRecipeFile" type="file" accept=".json,application/json" hidden></div><p id="gtBackupStatus" role="status" class="hint" style="display:none;overflow-wrap:anywhere"></p><input type="file" id="gtFullImportFile" accept=".json,application/json" hidden><p class="hint">写真・メモ・部位別配合・追加カラーなどを保存します。復元は現在の端末データを置き換えます。</p></div></div></details>
 <div class="gt-my-search"><label for="gtMyRecipeSearch">🔎 保存レシピを検索</label><input type="search" id="gtMyRecipeSearch" placeholder="レシピ名・色番・施術メモで検索" autocomplete="off"/><div id="gtMyRecipeSearchStatus" aria-live="polite" class="hint"></div></div><div id="recipes" style="margin-top:12px"></div>
 <p class="hint">写真・レシピはこの端末内に保存されます。機種変更前にデータを書き出してください。</p>
 </section><section class="gt-hidden-mode" hidden="" id="gtMiscSection"><h2>その他｜便利機能・カラー資料</h2><p class="hint">カラー計算を補助するツールや資料をまとめています。今後も便利機能をここに追加できます。</p><section class="panel"><h2>01 · オキシ濃度の調整</h2><div class="grid"><div><label>高濃度 (%)</label><input id="oxyHigh" min="0" step="0.1" type="number" value="6"/></div><div><label>低濃度 (%)</label><input id="oxyLow" min="0" step="0.1" type="number" value="3"/></div><div><label>目標濃度 (%)</label><input id="oxyTarget" min="0" step="0.1" type="number" value="4.5"/></div></div><div class="totalbox"><div class="metric"><span class="muted">高濃度オキシ</span><strong id="oxyHighG">—</strong></div><div class="metric"><span class="muted">低濃度オキシ</span><strong id="oxyLowG">—</strong></div><div class="metric"><span class="muted">目標濃度</span><strong id="oxyActual">—</strong></div></div><p class="warn" id="oxyWarn"></p><p class="hint">オキシ総量を高濃度と低濃度に分ける重量計算です。製品の混合可否やメーカーの使用条件を確認してください。</p></section><section class="panel" id="colorGuide"><h2>02 · カラー資料</h2><p class="hint">見たい資料を選択して確認できます。</p>
@@ -430,6 +430,17 @@ $('gtSharedRecipeFile').onchange=async e=>{
  }catch(err){alert('レシピを取り込めませんでした: '+err.message)}finally{e.target.value=''}
 };
 
+
+// Transfer bridge: main app state is scoped inside this IIFE.
+window.gtColorTransferBridge={
+ snapshot(){saveZone();return JSON.parse(JSON.stringify({...state,customHues}))},
+ restore(data){
+  const previous=localStorage.getItem(key);
+  const next={...state,...data,customHues:Array.isArray(data.customHues)?data.customHues:[]};
+  try{localStorage.setItem(key,JSON.stringify(next));const read=JSON.parse(localStorage.getItem(key)||'null');if(!read||!Array.isArray(read.recipes)||read.recipes.length!==data.recipes.length)throw Error('保存結果を確認できませんでした');}
+  catch(e){try{if(previous!==null)localStorage.setItem(key,previous);else localStorage.removeItem(key)}catch(_){}throw e;}
+ }
+};
 // --- GT COLOR LAB PRO tablet extension ---
 const zoneNames={root:'根元',middle:'中間',ends:'毛先'};
 let selectedDrug=0;
@@ -897,44 +908,37 @@ new MutationObserver(filter).observe(list,{childList:true});
 filter();
 })();</script><script id="gt-transfer-20261102">(()=>{
 const el=id=>document.getElementById(id);
-const filename=()=>`GT_COLOR_LAB_BACKUP_${new Date().toISOString().slice(0,10)}.json`;
-function saveFile(file){const url=URL.createObjectURL(file),a=document.createElement('a');a.href=url;a.download=file.name;a.style.display='none';document.body.appendChild(a);a.click();setTimeout(()=>{a.remove();URL.revokeObjectURL(url)},60000)}
-function setStatus(message){let n=el('gtBackupStatus');if(n){n.textContent=message;n.style.display='block'}}
+const status=msg=>{const n=el('gtBackupStatus');if(n){n.textContent=msg;n.style.display='block'}};
+const fileName=()=>`GT_COLOR_LAB_BACKUP_${new Date().toISOString().slice(0,10)}.json`;
+function download(blob,name){const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{a.remove();URL.revokeObjectURL(url)},60000)}
 function createBackup(){
- if(typeof saveZone==='function')saveZone();
- if(typeof state==='undefined'||!state||!Array.isArray(state.recipes))throw Error('レシピデータを読み込めません');
- const data=JSON.parse(JSON.stringify({...state,customHues:typeof customHues==='undefined'?[]:customHues}));
+ const bridge=window.gtColorTransferBridge;if(!bridge)throw Error('アプリのデータ管理が読み込まれていません。画面を再読み込みしてください');
+ const data=bridge.snapshot();if(!Array.isArray(data.recipes))throw Error('保存レシピを読み込めません');
  const json=JSON.stringify({format:'GT_COLOR_LAB_PRO_DEVICE_BACKUP',version:1,exportedAt:new Date().toISOString(),data});
- return {file:new File([json],filename(),{type:'application/json'}),count:data.recipes.length};
+ const blob=new Blob([json],{type:'application/json'});return {blob,count:data.recipes.length,name:fileName()};
 }
 el('gtFullExport')?.addEventListener('click',()=>{
- try{const {file,count}=createBackup();saveFile(file);setStatus(`バックアップ ${count}件・${(file.size/1024/1024).toFixed(2)}MB の保存を開始しました。ファイルアプリのダウンロード先をご確認ください。`)}
- catch(e){setStatus('バックアップ失敗: '+e.message);alert('バックアップを作成できませんでした: '+e.message)}
+ try{const {blob,count,name}=createBackup();download(blob,name);status(`バックアップ ${count}件（${(blob.size/1024/1024).toFixed(2)}MB）を作成しました。端末のダウンロードフォルダをご確認ください。`)}
+ catch(e){status('バックアップ失敗：'+e.message);alert('バックアップを作成できませんでした：'+e.message)}
 });
 el('gtBackupShare')?.addEventListener('click',async()=>{
- try{const {file,count}=createBackup();
-  if(navigator.canShare?.({files:[file]})&&navigator.share){
-   try{await navigator.share({files:[file],title:'GT COLOR LAB PRO バックアップ'});setStatus(`${count}件のバックアップを共有しました`);return}
-   catch(e){if(e.name==='AbortError'){setStatus('共有をキャンセルしました');return}}
+ try{const {blob,count,name}=createBackup();const file=new File([blob],name,{type:'application/json'});
+  if(navigator.share&&navigator.canShare?.({files:[file]})){
+   try{await navigator.share({files:[file],title:'GT COLOR LAB PRO バックアップ'});status(`${count}件のバックアップを共有しました`);return}
+   catch(e){if(e.name==='AbortError'){status('共有をキャンセルしました');return}}
   }
-  saveFile(file);setStatus('この端末ではファイル共有が利用できないため、バックアップをダウンロードしました。LINE等でファイルとして送ってください。');
- }catch(e){setStatus('バックアップ失敗: '+e.message);alert('バックアップを作成できませんでした: '+e.message)}
+  download(blob,name);status('共有メニューでファイルを送れないため、バックアップをダウンロードしました。LINEのファイル添付から送信してください。');
+ }catch(e){status('共有に失敗：'+e.message);alert('バックアップを共有できませんでした：'+e.message)}
 });
 el('gtFullImport')?.addEventListener('click',()=>el('gtFullImportFile')?.click());
 el('gtFullImportFile')?.addEventListener('change',async e=>{
  const f=e.target.files?.[0];if(!f)return;
  try{
   if(f.size>100*1024*1024)throw Error('100MBを超えるファイルは読み込めません');
-  const b=JSON.parse(await f.text());
-  if(b.format!=='GT_COLOR_LAB_PRO_DEVICE_BACKUP'||b.version!==1||!b.data)throw Error('対応していないバックアップ形式です');
-  const s=b.data;
-  if(!Array.isArray(s.recipes)||!Array.isArray(s.history)||!Array.isArray(s.drugs)||s.recipes.length>1000||s.history.length>1000)throw Error('バックアップデータが不正です');
-  if(!confirm(`保存レシピ${s.recipes.length}件を含むバックアップで、この端末のデータを置き換えます。現在のデータはバックアップしましたか？`))return;
-  const next={...state,...s,customHues:Array.isArray(s.customHues)?s.customHues:[]};
-  const previous=localStorage.getItem(key);
-  try{localStorage.setItem(key,JSON.stringify(next));const check=JSON.parse(localStorage.getItem(key));if(check.recipes.length!==s.recipes.length)throw Error('保存確認に失敗しました')}
-  catch(err){if(previous!==null)localStorage.setItem(key,previous);else localStorage.removeItem(key);throw Error('端末の保存容量不足、または保存失敗: '+err.message)}
-  alert('復元しました。画面を再読み込みします。');location.reload();
- }catch(err){alert('復元できませんでした: '+err.message)}finally{e.target.value=''}
+  const b=JSON.parse(await f.text());if(b.format!=='GT_COLOR_LAB_PRO_DEVICE_BACKUP'||b.version!==1||!b.data)throw Error('対応していないバックアップ形式です');
+  const s=b.data;if(!Array.isArray(s.recipes)||!Array.isArray(s.history)||!Array.isArray(s.drugs)||s.recipes.length>1000||s.history.length>1000)throw Error('バックアップの内容が正しくありません');
+  if(!confirm(`保存レシピ${s.recipes.length}件を含むバックアップで、この端末のデータを置き換えます。現在のデータは保存しましたか？`))return;
+  window.gtColorTransferBridge.restore(s);alert('復元が完了しました。画面を再読み込みします。');location.reload();
+ }catch(err){alert('復元できませんでした：'+err.message)}finally{e.target.value=''}
 });
 })();</script></body></html>
