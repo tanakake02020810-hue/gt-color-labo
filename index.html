@@ -253,7 +253,7 @@ window.gtRoundFormula=function(pcts,target){
 <div aria-modal="true" class="hide" id="weighOverlay" role="dialog"><div class="flex between"><h2>GT COLOR LAB · 計量モード</h2><button id="closeWeigh">閉じる ×</button></div><div id="weighContent"></div></div><footer>GT COLOR LAB PRO · 2026.11.02 検索結果表示版</footer><section class="panel" hidden="" id="recipeSection"><div class="recipe-head"><h2 style="margin:0">📸 N.ルフレ PHOTO RECIPE</h2><span class="recipe-count" id="recipeCount">読み込み中…</span></div><p class="muted">ナプラ公式Instagram掲載の配合例。写真を選ぶと施術前・根元・中間・毛先などの詳細を表示します。</p><div class="recipe-search"><input aria-label="レシピ検索" id="photoRecipeSearch" placeholder="カラー名・薬剤名・レベルで検索" type="search"/></div><div class="recipe-cards" id="recipeCards"></div><p class="recipe-notice">※掲載データは提供されたInstagram保存HTMLに記載された内容を転記しています。写真とレシピの対応は公開前に目視確認してください。レシピの部位区分は原文のまま表示し、未記載の項目は補完していません。</p></section><dialog class="recipe-dialog" id="recipeDialog"><div class="recipe-detail" id="recipeDetail"></div></dialog><section class="panel gt-hidden-mode" hidden="" id="gtMyRecipeSection">
 <div class="recipe-head"><h2 style="margin:0">📒 MY RECIPE</h2><span class="recipe-count" id="gtMyRecipeCount"></span></div>
 <p class="hint">保存したレシピと施術前・施術後の写真をまとめて確認できます。「呼出」でCOLOR LABに戻して編集できます。</p>
-<div class="actions"><button type="button" id="gtImportSharedRecipe" class="primary">📥 共有レシピを取り込む</button><input id="gtSharedRecipeFile" type="file" accept=".json,application/json" hidden></div><p class="hint">LINEなどで受け取ったGTレシピファイルを選んで追加できます。現在の保存レシピは上書きしません。</p><div class="gt-my-search"><label for="gtMyRecipeSearch">🔎 保存レシピを検索</label><input type="search" id="gtMyRecipeSearch" placeholder="レシピ名・色番・施術メモで検索" autocomplete="off"/><div id="gtMyRecipeSearchStatus" aria-live="polite" class="hint"></div></div><div id="recipes" style="margin-top:12px"></div>
+<div class="actions"><button type="button" id="gtImportSharedRecipe" class="primary">📥 共有レシピを取り込む</button><input id="gtSharedRecipeFile" type="file" accept=".json,application/json" hidden></div><p class="hint">LINEなどで受け取ったGTレシピファイルを選んで追加できます。現在の保存レシピは上書きしません。</p><section class="gt-transfer-tools" aria-label="共有とデータ移行" style="margin:14px 0;padding:14px;border:1px solid #dfe4ef;border-radius:16px;background:#f8faff"><h3 style="margin:0 0 8px;font-size:17px">📲 共有・機種変更</h3><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:9px"><button type="button" id="gtFullExport" class="primary">📦 全データをバックアップ</button><button type="button" id="gtFullImport">📥 新しい端末で復元</button></div><input type="file" id="gtFullImportFile" accept=".json,application/json" hidden><p class="hint" style="margin:8px 0 0">写真・メモ・部位別配合・追加カラーなどを保存します。機種変更前にバックアップをLINEや端末のファイルに保管してください。復元は既存データを置き換えます。</p></section><div class="gt-my-search"><label for="gtMyRecipeSearch">🔎 保存レシピを検索</label><input type="search" id="gtMyRecipeSearch" placeholder="レシピ名・色番・施術メモで検索" autocomplete="off"/><div id="gtMyRecipeSearchStatus" aria-live="polite" class="hint"></div></div><div id="recipes" style="margin-top:12px"></div>
 <p class="hint">写真・レシピはこの端末内に保存されます。機種変更前にデータを書き出してください。</p>
 </section><section class="gt-hidden-mode" hidden="" id="gtMiscSection"><h2>その他｜便利機能・カラー資料</h2><p class="hint">カラー計算を補助するツールや資料をまとめています。今後も便利機能をここに追加できます。</p><section class="panel"><h2>01 · オキシ濃度の調整</h2><div class="grid"><div><label>高濃度 (%)</label><input id="oxyHigh" min="0" step="0.1" type="number" value="6"/></div><div><label>低濃度 (%)</label><input id="oxyLow" min="0" step="0.1" type="number" value="3"/></div><div><label>目標濃度 (%)</label><input id="oxyTarget" min="0" step="0.1" type="number" value="4.5"/></div></div><div class="totalbox"><div class="metric"><span class="muted">高濃度オキシ</span><strong id="oxyHighG">—</strong></div><div class="metric"><span class="muted">低濃度オキシ</span><strong id="oxyLowG">—</strong></div><div class="metric"><span class="muted">目標濃度</span><strong id="oxyActual">—</strong></div></div><p class="warn" id="oxyWarn"></p><p class="hint">オキシ総量を高濃度と低濃度に分ける重量計算です。製品の混合可否やメーカーの使用条件を確認してください。</p></section><section class="panel" id="colorGuide"><h2>02 · カラー資料</h2><p class="hint">見たい資料を選択して確認できます。</p>
 <div aria-label="カラー資料" class="guide-tabs" role="tablist"><button aria-controls="guideWheelPanel" aria-selected="true" id="guideWheelTab" role="tab" type="button">色相環・補色</button><button aria-controls="guideClearPanel" aria-selected="false" id="guideClearTab" role="tab" type="button">クリア配合レベル表</button></div>
@@ -888,4 +888,45 @@ input.addEventListener('input',filter);
 list.addEventListener('input',e=>{if(e.target.matches('textarea'))filter()});
 new MutationObserver(filter).observe(list,{childList:true});
 filter();
+})();</script><script id="gt-transfer-20261102">(()=>{
+const $t=id=>document.getElementById(id);
+const download=(blob,name)=>{const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),30000)};
+const makeFile=(obj,name)=>new File([JSON.stringify(obj)],name,{type:'application/json'});
+async function sendFile(file){
+ try{if(navigator.share&&(!navigator.canShare||navigator.canShare({files:[file]}))){await navigator.share({files:[file],title:'GT COLOR LAB PRO'});return}}catch(e){if(e.name==='AbortError')return;}
+ download(file,file.name);alert('共有メニューから送信できなかったためファイルを保存しました。LINEのトークで「ファイル」として添付してください。');
+}
+// Use the existing recipe share payload, including before/after photos and memo.
+$t('recipes')?.addEventListener('click',e=>{
+ const btn=e.target.closest('button[data-share-recipe]');if(!btn)return;
+ e.stopImmediatePropagation();
+ const r=state.recipes[Number(btn.dataset.shareRecipe)];if(!r)return;
+ const safe=String(r.name||'recipe').replace(/[\\/:*?"<>|\x00-\x1f]/g,'_').slice(0,35);
+ sendFile(makeFile({format:'GT_COLOR_LAB_PRO_RECIPE',version:1,recipe:r},'GT_RECIPE_'+safe+'.json'));
+},true);
+$t('gtFullExport')?.addEventListener('click',()=>{
+ try{
+  if(typeof saveZone==='function')saveZone();
+  const backup={format:'GT_COLOR_LAB_PRO_DEVICE_BACKUP',version:1,exportedAt:new Date().toISOString(),data:{...state,customHues}};
+  const file=makeFile(backup,'GT_COLOR_LAB_PRO_DEVICE_BACKUP_'+new Date().toISOString().slice(0,10)+'.json');
+  download(file,file.name);alert('バックアップを保存しました。新しい端末に移すまで、このファイルを安全な場所に保管してください。');
+ }catch(e){alert('バックアップを作成できませんでした: '+e.message)}
+});
+$t('gtFullImport')?.addEventListener('click',()=>$t('gtFullImportFile')?.click());
+$t('gtFullImportFile')?.addEventListener('change',async e=>{
+ const f=e.target.files?.[0];if(!f)return;
+ try{
+  if(f.size>60*1024*1024)throw Error('60MBを超えるファイルは読み込めません');
+  const b=JSON.parse(await f.text());
+  if(b.format!=='GT_COLOR_LAB_PRO_DEVICE_BACKUP'||b.version!==1||!b.data)throw Error('対応していないバックアップ形式です');
+  const s=b.data;
+  if(!Array.isArray(s.recipes)||!Array.isArray(s.history)||!Array.isArray(s.drugs)||s.recipes.length>1000||s.history.length>1000)throw Error('バックアップデータが不正です');
+  if(!confirm('保存レシピ'+s.recipes.length+'件を含むバックアップで、現在のこの端末のデータを置き換えます。現在のデータをバックアップしましたか？'))return;
+  const next={...state,...s,customHues:Array.isArray(s.customHues)?s.customHues:[]};
+  const previous=localStorage.getItem(key);
+  try{localStorage.setItem(key,JSON.stringify(next))}catch(err){throw Error('保存容量が不足しています。写真を減らすか端末の空き容量をご確認ください')}
+  try{const test=JSON.parse(localStorage.getItem(key));if(test.recipes.length!==s.recipes.length)throw Error('保存確認に失敗しました')}catch(err){if(previous!==null)localStorage.setItem(key,previous);else localStorage.removeItem(key);throw err}
+  alert('復元しました。画面を再読み込みします。');location.reload();
+ }catch(err){alert('復元できませんでした: '+err.message)}finally{e.target.value=''}
+});
 })();</script></body></html>
