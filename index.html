@@ -250,7 +250,7 @@ window.gtRoundFormula=function(pcts,target){
 <section class="panel"><div class="actions"><button class="primary" id="copy">配合結果をコピー</button><button id="print">印刷</button></div><p class="hint">1g単位で計算。指定量以上で比率を保てる最小量を優先し、必要に応じて近似調整。表示上の合計が総量と一致するようにしています。メーカー指定の混合比・使用条件は別途確認してください。</p></section>
 <section class="panel" hidden style="display:none!important" aria-hidden="true"><h2>07 · カラー選択サポート</h2><div class="flex"><div class="grow"><label>お気に入り・最近使った色番</label><select id="quickColor"><option value="">色番を選択</option></select></div><button id="favorite">★ 現在の薬剤をお気に入り</button></div><div id="favList"></div><p class="hint">お気に入りの色番をタップすると、選択中の薬剤欄に反映します。薬剤欄をタップすると選択対象になります。</p></section>
 <section class="panel" hidden style="display:none!important" aria-hidden="true"><h2>08 · レシピ検索・共有</h2><label>保存レシピを検索</label><input id="recipeSearch" placeholder="名前・色番で検索"/><div class="actions"><button class="primary" id="share">現在の配合を共有</button><button id="backupAll">部位別データを含むバックアップ</button></div><p class="hint">共有は端末の共有メニュー、非対応の場合はコピーで対応します。バックアップは別端末への移行にも使えます。</p></section><section class="panel"><h2>カラー剤マスター管理</h2><p class="hint">新しい色相コードを登録すると、各明度の候補に追加されます（追加した色相は全明度に表示されます）。登録内容はこの端末に保存されます。</p><div class="flex"><div class="grow"><label for="newHueName">カラー名（例：新色グレージュ）</label><input id="newHueName" placeholder="カラー名"/></div><div class="grow"><label for="newHueCode">色番コード（例：GG）</label><input id="newHueCode" maxlength="16" placeholder="GG"/></div><button class="primary" id="registerHue">＋ カラーを登録</button></div><div id="customHueList" style="margin-top:12px"></div><p class="hint">追加した色相は全明度で選択できます。実際に存在する明度・色番か確認してください。削除しても、すでに作成したレシピの薬剤名は残ります。</p></section>
-<div aria-modal="true" class="hide" id="weighOverlay" role="dialog"><div class="flex between"><h2>GT COLOR LAB · 計量モード</h2><button id="closeWeigh">閉じる ×</button></div><div id="weighContent"></div></div><footer>GT COLOR LAB PRO · 2026.11.02 検索修正版</footer><section class="panel" hidden="" id="recipeSection"><div class="recipe-head"><h2 style="margin:0">📸 N.ルフレ PHOTO RECIPE</h2><span class="recipe-count" id="recipeCount">読み込み中…</span></div><p class="muted">ナプラ公式Instagram掲載の配合例。写真を選ぶと施術前・根元・中間・毛先などの詳細を表示します。</p><div class="recipe-search"><input aria-label="レシピ検索" id="photoRecipeSearch" placeholder="カラー名・薬剤名・レベルで検索" type="search"/></div><div class="recipe-cards" id="recipeCards"></div><p class="recipe-notice">※掲載データは提供されたInstagram保存HTMLに記載された内容を転記しています。写真とレシピの対応は公開前に目視確認してください。レシピの部位区分は原文のまま表示し、未記載の項目は補完していません。</p></section><dialog class="recipe-dialog" id="recipeDialog"><div class="recipe-detail" id="recipeDetail"></div></dialog><section class="panel gt-hidden-mode" hidden="" id="gtMyRecipeSection">
+<div aria-modal="true" class="hide" id="weighOverlay" role="dialog"><div class="flex between"><h2>GT COLOR LAB · 計量モード</h2><button id="closeWeigh">閉じる ×</button></div><div id="weighContent"></div></div><footer>GT COLOR LAB PRO · 2026.11.02 検索結果表示版</footer><section class="panel" hidden="" id="recipeSection"><div class="recipe-head"><h2 style="margin:0">📸 N.ルフレ PHOTO RECIPE</h2><span class="recipe-count" id="recipeCount">読み込み中…</span></div><p class="muted">ナプラ公式Instagram掲載の配合例。写真を選ぶと施術前・根元・中間・毛先などの詳細を表示します。</p><div class="recipe-search"><input aria-label="レシピ検索" id="photoRecipeSearch" placeholder="カラー名・薬剤名・レベルで検索" type="search"/></div><div class="recipe-cards" id="recipeCards"></div><p class="recipe-notice">※掲載データは提供されたInstagram保存HTMLに記載された内容を転記しています。写真とレシピの対応は公開前に目視確認してください。レシピの部位区分は原文のまま表示し、未記載の項目は補完していません。</p></section><dialog class="recipe-dialog" id="recipeDialog"><div class="recipe-detail" id="recipeDetail"></div></dialog><section class="panel gt-hidden-mode" hidden="" id="gtMyRecipeSection">
 <div class="recipe-head"><h2 style="margin:0">📒 MY RECIPE</h2><span class="recipe-count" id="gtMyRecipeCount"></span></div>
 <p class="hint">保存したレシピと施術前・施術後の写真をまとめて確認できます。「呼出」でCOLOR LABに戻して編集できます。</p>
 <div class="actions"><button type="button" id="gtImportSharedRecipe" class="primary">📥 共有レシピを取り込む</button><input id="gtSharedRecipeFile" type="file" accept=".json,application/json" hidden></div><p class="hint">LINEなどで受け取ったGTレシピファイルを選んで追加できます。現在の保存レシピは上書きしません。</p><div class="gt-my-search"><label for="gtMyRecipeSearch">🔎 保存レシピを検索</label><input type="search" id="gtMyRecipeSearch" placeholder="レシピ名・色番・施術メモで検索" autocomplete="off"/><div id="gtMyRecipeSearchStatus" aria-live="polite" class="hint"></div></div><div id="recipes" style="margin-top:12px"></div>
@@ -859,4 +859,33 @@ btn.addEventListener('click',()=>{
 });
 })();
 </script><style id="gt-my-search-style">.gt-my-search{margin:18px 0 14px;padding:16px;border:1px solid #e9e5f0;border-radius:18px;background:linear-gradient(120deg,#fff3fa,#effaff)}.gt-my-search label{display:block;font-weight:700;margin-bottom:9px;color:#343c53}.gt-my-search input{display:block;width:100%;font-size:16px;min-height:48px;border-radius:13px;background:white}.gt-my-search #gtMyRecipeSearchStatus{margin-top:8px}</style>
-<script id="gt-my-recipe-search-script">(()=>{const input=document.getElementById('gtMyRecipeSearch'),list=document.getElementById('recipes'),status=document.getElementById('gtMyRecipeSearchStatus');if(!input||!list)return;const norm=v=>String(v||'').normalize('NFKC').toLocaleLowerCase().replace(/\s+/g,'');function run(){const q=norm(input.value),cards=[...list.querySelectorAll(':scope > .rowitem')];let shown=0;cards.forEach((card,i)=>{const r=(typeof state!=='undefined'&&state.recipes||[])[i]||{};const drugs=[...(r.data?.drugs||[]),...Object.values(r.zones||{}).flatMap(z=>z?.drugs||[])].map(d=>d.name||'').join(' ');const hay=norm([r.name,r.memo,drugs,card.textContent].join(' '));const match=!q||hay.includes(q);card.hidden=!match;card.style.display=match?'':'none';if(match)shown++});status.textContent=q?`${shown}件見つかりました（全${cards.length}件）`:`全${cards.length}件のレシピ`;}input.addEventListener('input',run);list.addEventListener('input',e=>{if(e.target.matches('textarea'))run()});new MutationObserver(run).observe(list,{childList:true});run()})();</script></body></html>
+<script id="gt-my-recipe-search-script">(()=>{
+const input=document.getElementById('gtMyRecipeSearch');
+const list=document.getElementById('recipes');
+const status=document.getElementById('gtMyRecipeSearchStatus');
+if(!input||!list||!status)return;
+const norm=v=>String(v??'').normalize('NFKC').toLocaleLowerCase().replace(/\s+/g,' ').trim();
+function filter(){
+ const terms=norm(input.value).split(' ').filter(Boolean);
+ const cards=Array.from(list.children).filter(el=>el.classList.contains('rowitem'));
+ let count=0;
+ cards.forEach((card,index)=>{
+  const rec=(typeof state!=='undefined'&&Array.isArray(state.recipes)?state.recipes[index]:null)||{};
+  const drugs=[...(rec.data?.drugs||[]),...Object.values(rec.zones||{}).flatMap(z=>z?.drugs||[])].map(d=>[d.name,d.code,d.hue,d.level].filter(Boolean).join(' ')).join(' ');
+  const hay=norm([rec.name,rec.memo,rec.date,drugs,card.textContent].join(' '));
+  const visible=terms.every(term=>hay.includes(term));
+  card.hidden=!visible;
+  card.style.setProperty('display',visible?'':'none',visible?'':'important');
+  if(visible)count++;
+ });
+ let empty=document.getElementById('gtSearchEmpty');
+ if(!empty){empty=document.createElement('p');empty.id='gtSearchEmpty';empty.className='muted';list.after(empty)}
+ empty.hidden=terms.length===0||count!==0;
+ empty.textContent='一致するレシピはありません。検索語を変えてください。';
+ status.textContent=terms.length?`${count}件の検索結果（全${cards.length}件）`:`全${cards.length}件のレシピを表示`;
+}
+input.addEventListener('input',filter);
+list.addEventListener('input',e=>{if(e.target.matches('textarea'))filter()});
+new MutationObserver(filter).observe(list,{childList:true});
+filter();
+})();</script></body></html>
